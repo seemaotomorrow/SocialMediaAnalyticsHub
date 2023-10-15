@@ -29,6 +29,7 @@ public class LoggedInController implements Initializable {
 
             }
         });
+
     }
 
     public void setUserInformation (String username){

@@ -18,8 +18,7 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-  mainModule = 'com.example.dataanalyticshub'
-  mainClass = 'com.example.dataanalyticshub.HelloApplication'
+  mainClass = 'com.example.dataanalyticshub.Main'
 }
 
 javafx {

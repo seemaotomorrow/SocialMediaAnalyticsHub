@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.LoggedInController">
    <children>
-      <AnchorPane fx:id="label_welcome" prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
             <Button fx:id="button_logout" layoutX="69.0" layoutY="359.0" mnemonicParsing="false" style="-fx-background-color: #f984ef;" text="Logout">
                <font>
@@ -19,7 +19,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="400.0" prefWidth="402.0">
          <children>
-            <Label layoutX="93.0" layoutY="53.0" text="Welcome!">
+            <Label fx:id="label_welcome" layoutX="93.0" layoutY="53.0" text="Welcome!">
                <font>
                   <Font size="18.0" />
                </font>

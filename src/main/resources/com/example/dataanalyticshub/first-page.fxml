@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.FirstPageController">
    <children>
       <AnchorPane prefHeight="380.0" prefWidth="260.0">
          <children>
             <ImageView fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../../../../Downloads/Data%20Analytics%20Hub.png" />
+                  <Image url="@../../../../../../../Data%20Analytics%20Hub.png" />
                </image>
             </ImageView>
          </children>

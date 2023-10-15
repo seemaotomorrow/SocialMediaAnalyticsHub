@@ -40,8 +40,8 @@ public class DBUtils {
             }
         }
 
-        // double cast
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Node node = (Node) event.getSource();
+        Stage stage = (Stage) node.getScene().getWindow();
         stage.setTitle(title);
         stage.setScene(new Scene(root, 600, 400));
         stage.show();
@@ -54,23 +54,27 @@ public class DBUtils {
         // use for query the database
         PreparedStatement psInsert = null;
         PreparedStatement psCheckUserExists = null;
+        // contain the data return from the database when query it
         ResultSet resultSet = null;
 
 
         try{
-            connection = DriverManager.getConnection("jdbc:sqlite:/jetbrains://idea/navigate/reference?project=advanced-programming&path=DataAnalyticsHub/userInfo.db", "root","1234567");
+            // connect the database
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
             psCheckUserExists = connection.prepareStatement("SELECT * FROM UserInfo WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
 
-            // 55min 02second
+            // isBeforeFirst return false: resultSet is empty
+            // isBeforeFirst return true: resultSet is not empty
+            // if the resultSet is not empty, means the username already exist in the database
             if (resultSet.isBeforeFirst()){
                 System.out.println("username already exit");
                 Alert alert =  new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("You cannot use this username");
                 alert.show();
             } else{
-                psInsert  =connection.prepareStatement("INSERT INTO UserInfo (firstName, lastName, username, password VALUES(?, ?, ?, ?)");
+                psInsert  =connection.prepareStatement("INSERT INTO UserInfo (firstName, lastName, username, password) VALUES(?, ?, ?, ?)");
                 psInsert.setString(1,firstName);
                 psInsert.setString(2,lastName);
                 psInsert.setString(3,username);
@@ -80,7 +84,7 @@ public class DBUtils {
             }
         } catch (SQLException e){
             e.printStackTrace();
-        } finally {
+        } finally { // close all the database connection to avoid memory leakage
             if (resultSet != null){
                 try{
                     resultSet.close();
@@ -91,6 +95,13 @@ public class DBUtils {
 
             if (psCheckUserExists != null){
                 try{
+                    psCheckUserExists.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+            if (psInsert != null){
+                try {
                     psInsert.close();
                 } catch (SQLException e){
                     e.printStackTrace();
@@ -114,18 +125,21 @@ public class DBUtils {
         ResultSet resultSet = null;
 
         try{
-            connection = DriverManager.getConnection("jdbc:sqlite:/jetbrains://idea/navigate/reference?project=advanced-programming&path=DataAnalyticsHub/userInfo.db", "root","1234567");
-            preparedStatement = connection.prepareStatement("SELECT password FROM userInfo WHERE username = ?");
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            preparedStatement = connection.prepareStatement("SELECT password FROM UserInfo WHERE username = ?");
             preparedStatement.setString(1,username);
             resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.isBeforeFirst()){
+            // if user is not found in the database, prompt user that
+            if (!resultSet.isBeforeFirst()){
                 System.out.println("User not found in the database");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Provided credentials are incorrect");
                 alert.show();
             } else {
+                // when user exists in the database
                 while (resultSet.next()){
+                    // retrieve password from database
                     String retrievedPassword = resultSet.getString("password");
                     // if the password user input matches the database, show logged-in page
                     if (retrievedPassword.equals(password)){
@@ -140,7 +154,7 @@ public class DBUtils {
             }
         } catch (SQLException e){
             e.printStackTrace();
-        } finally {
+        } finally {  // close all the database connection to avoid memory leakage
             if (resultSet != null){
                 try{
                     resultSet.close();
