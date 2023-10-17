@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.sql.*;
 
 import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
-import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE;
 
 /* Do all the communications with the database
 *  Reference: "JavaFX Login and Signup Form with Database Connection"
@@ -21,6 +20,8 @@ import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE;
 public class DBUtils {
 
     private static User currentUser;
+
+    private static ValidateUserInput validateUserInput;
 
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username, String firstname, String lastname){
         Parent root = null;
@@ -154,7 +155,7 @@ public class DBUtils {
                     } else {
                         System.out.println("Password did not match");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("The provided credentials are incorrect");
+                        alert.setContentText("The provided password is incorrect");
                         alert.show();
                     }
                 }
@@ -202,39 +203,27 @@ public class DBUtils {
             // connect the database
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
 
-            // Check if the new username is already in use
-//            psCheckUserExists = connection.prepareStatement("SELECT * FROM UserInfo WHERE username = ?");
-//            psCheckUserExists.setString(1, newUsername);
-//            resultSet = psCheckUserExists.executeQuery();
-//
-//            if (resultSet.isBeforeFirst()) {
-//                System.out.println("Username is already in use");
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setContentText("Username is already in use. Please choose a different username.");
-//                alert.show();
-//            } else
-            {
-                // Update the user's profile to database
-                psUpdateProfile = connection.prepareStatement("UPDATE UserInfo SET firstName = ?, lastName = ?, username = ?, password = ? WHERE username = ?");
-                psUpdateProfile.setString(1, newFirstName);
-                psUpdateProfile.setString(2, newLastName);
-                psUpdateProfile.setString(3, newUsername);
-                psUpdateProfile.setString(4, newPassword);
-                psUpdateProfile.setString(5, currentUser.getUsername());
-                int rowsAffected = psUpdateProfile.executeUpdate();
+            // Update the user's profile to database
+            psUpdateProfile = connection.prepareStatement("UPDATE UserInfo SET firstName = ?, lastName = ?, username = ?, password = ? WHERE username = ?");
+            psUpdateProfile.setString(1, newFirstName);
+            psUpdateProfile.setString(2, newLastName);
+            psUpdateProfile.setString(3, newUsername);
+            psUpdateProfile.setString(4, newPassword);
+            psUpdateProfile.setString(5, currentUser.getUsername());
+            int rowsAffected = psUpdateProfile.executeUpdate();
 
-
-                if (rowsAffected > 0) {
-                    currentUser = new User(newUsername, newFirstName, newLastName, newPassword);
-                    changeScene(event, "logged-in.fxml", "Profile Updated", newUsername, newFirstName, newLastName);
-                } else {
-                    System.out.println("Failed to update profile");
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Failed to update profile. Please try again.");
-                    alert.show();
-                }
+            // if the new info successfully update to database
+            if (rowsAffected > 0) {
+                currentUser = new User(newUsername, newFirstName, newLastName, newPassword);
+                changeScene(event, "logged-in.fxml", "Profile Updated", newUsername, newFirstName, newLastName);
+            } else {
+                System.out.println("Failed to update profile");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Failed to update profile. Please try again.");
+                alert.show();
             }
         } catch (SQLException e){
+            // if the username already exist in the database
             if (e.getErrorCode() == SQLITE_CONSTRAINT.code) {
                 System.out.println("Username is already in use");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -276,6 +265,65 @@ public class DBUtils {
             }
         }
 
+    }
+
+    public static void addPost(ActionEvent event, String content, String likesStr, String sharesStr, String date) {
+        // Validate the input data
+        ValidateUserInput validateUserInput = new ValidateUserInput();
+        if (validateUserInput.hasNoComma(content) || !validateUserInput.isPositiveInteger(likesStr) || !validateUserInput.isPositiveInteger(sharesStr) || !validateUserInput.validateDateFromUser(date)) {
+            System.out.println("Invalid post data. Please check your input.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Invalid post data. Please check your input.");
+            alert.show();
+            return;
+        }
+
+        int likes = Integer.parseInt(likesStr);
+        int shares = Integer.parseInt(sharesStr);
+
+        // Insert the post into the database
+        Connection connection = null;
+        PreparedStatement psInsert = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // Add a post to database
+            psInsert = connection.prepareStatement("INSERT INTO Posts (content, likes, shares, date, userid) VALUES (?, ?, ?, ?, (SELECT userId FROM UserInfo WHERE username = ?))");
+            psInsert.setString(1, content);
+            psInsert.setInt(2, likes);
+            psInsert.setInt(3, shares);
+            psInsert.setString(4, date);
+            psInsert.setString(5, currentUser.getUsername());
+
+            int rowsAffected = psInsert.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Post added successfully!");
+                changeScene(event, "logged-in.fxml", "Post has been added", currentUser.getUsername(), currentUser.getFirstName(), currentUser.getLastName());
+            } else {
+                System.out.println("Failed to add the post.");
+                // Handle the case where the post was not added to the database
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources
+            if (psInsert != null) {
+                try {
+                    psInsert.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public static User getCurrentUser() {

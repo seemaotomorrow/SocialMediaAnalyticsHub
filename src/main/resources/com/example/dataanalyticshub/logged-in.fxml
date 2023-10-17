@@ -20,16 +20,18 @@
                   <Font size="14.0" />
                </font>
             </Button>
-         </children>
-      </AnchorPane>
-      <AnchorPane prefHeight="400.0" prefWidth="402.0">
-         <children>
-            <Label fx:id="label_welcome" layoutX="93.0" layoutY="53.0" text="Welcome!">
+            <Button fx:id="button_addPost" layoutY="167.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="199.0" style="-fx-background-color: #4682B4;" text="Add a post">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label fx:id="label_welcome" layoutX="22.0" layoutY="45.0" text="Welcome!">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
+      <AnchorPane prefHeight="400.0" prefWidth="402.0" />
    </children>
 </HBox>

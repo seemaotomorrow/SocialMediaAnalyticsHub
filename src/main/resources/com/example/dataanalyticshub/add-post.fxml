@@ -1,14 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.dataanalyticshub.AddPostController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.AddPostController">
+   <children>
+      <AnchorPane prefHeight="380.0" prefWidth="260.0">
+         <children>
+            <ImageView fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@DataAnalyticsHub.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="379.0" prefWidth="341.0">
+         <children>
+            <Label layoutX="22.0" layoutY="201.0" text="Shares" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="201.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_shares" layoutX="97.0" layoutY="196.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Button fx:id="button_addPost" layoutX="97.0" layoutY="284.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="172.0" style="-fx-background-color: #89CFF0;" text="Add">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="73.0" layoutY="330.0" text="Go back to dashboard">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="button_backToDashboard" layoutX="203.0" layoutY="326.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="19.0" layoutY="118.0" text="Content" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="118.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="27.0" layoutY="158.0" text="Likes" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="158.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_likes" layoutX="97.0" layoutY="154.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Label layoutX="19.0" layoutY="58.0" prefHeight="24.0" prefWidth="238.0" text="Add a post to your collection">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_content" layoutX="97.0" layoutY="114.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Label layoutX="29.0" layoutY="245.0" text="Date">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_date" layoutX="97.0" layoutY="240.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>
