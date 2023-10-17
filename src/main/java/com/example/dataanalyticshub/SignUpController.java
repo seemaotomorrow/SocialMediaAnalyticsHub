@@ -6,9 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import org.sqlite.core.DB;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,7 +46,7 @@ public class SignUpController implements Initializable {
         button_login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "first-page.fxml", "Log in!", null, null, null);
+                Navigator.changeScene(event, "first-page.fxml", "Log in!");
             }
         });
 

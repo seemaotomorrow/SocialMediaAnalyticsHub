@@ -47,7 +47,7 @@ public class AddPostController implements Initializable {
         button_backToDashboard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "logged-in.fxml", "Log in!", null, null, null);
+                Navigator.changeScene(event, "logged-in.fxml", "Log in!");
             }
         });
     }

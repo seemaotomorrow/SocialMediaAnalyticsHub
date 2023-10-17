@@ -28,10 +28,12 @@ public class EditProfileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tf_newUsername.setText(DBUtils.getCurrentUser().getUsername());
-        tf_newFirstName.setText(DBUtils.getCurrentUser().getFirstName());
-        tf_newLastName.setText(DBUtils.getCurrentUser().getLastName());
-        tf_newPassword.setText(DBUtils.getCurrentUser().getPassword());
+        User currentUser = DBUtils.getCurrentUser();
+        tf_newUsername.setText(currentUser.getUsername());
+        tf_newFirstName.setText(currentUser.getFirstName());
+        tf_newLastName.setText(currentUser.getLastName());
+        tf_newPassword.setText(currentUser.getPassword());
+
         button_saveChanges.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -49,7 +51,7 @@ public class EditProfileController implements Initializable {
         button_backToDashboard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "logged-in.fxml", "Log in!", null, null, null);
+                Navigator.changeScene(event, "logged-in.fxml", "Log in!");
             }
         });
 

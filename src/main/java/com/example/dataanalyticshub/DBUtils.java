@@ -1,14 +1,8 @@
 package com.example.dataanalyticshub;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.*;
 
 import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
@@ -20,36 +14,6 @@ import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
 public class DBUtils {
 
     private static User currentUser;
-
-    private static ValidateUserInput validateUserInput;
-
-    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username, String firstname, String lastname){
-        Parent root = null;
-
-        if (username != null){
-            try{
-                FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
-                root = loader.load();
-                LoggedInController loggedInController = loader.getController();
-                loggedInController.setUserInformation(username, firstname, lastname);
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-        } else{
-            try{
-                root = FXMLLoader.load(DBUtils.class.getResource(fxmlFile));
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-
-        Node node = (Node) event.getSource();
-        Stage stage = (Stage) node.getScene().getWindow();
-        stage.setTitle(title);
-        stage.setScene(new Scene(root, 600, 400));
-        stage.show();
-
-    }
 
     public static void signUpUser(ActionEvent event, String firstName, String lastName, String username, String password){
 
@@ -85,7 +49,12 @@ public class DBUtils {
                 psInsert.setString(3,username);
                 psInsert.setString(4,password);
                 psInsert.executeUpdate();
-                changeScene(event, "logged-in.fxml", "Welcome!", username, firstName, lastName);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Your account has been created successfully");
+                alert.showAndWait();
+                Navigator.changeScene(event, "logged-in.fxml", "Profile Updated");
+                Navigator.changeScene(event, "logged-in.fxml", "Welcome!");
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -151,7 +120,7 @@ public class DBUtils {
                     // if the password user input matches the database, show logged-in page
                     if (retrievedPassword.equals(password)){
                         currentUser = new User(username, retrievedFirstName, retrievedLastName, retrievedPassword);
-                        changeScene(event, "logged-in.fxml","Welcome!", username, retrievedFirstName, retrievedLastName);
+                        Navigator.changeScene(event, "logged-in.fxml","Welcome!");
                     } else {
                         System.out.println("Password did not match");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -215,7 +184,11 @@ public class DBUtils {
             // if the new info successfully update to database
             if (rowsAffected > 0) {
                 currentUser = new User(newUsername, newFirstName, newLastName, newPassword);
-                changeScene(event, "logged-in.fxml", "Profile Updated", newUsername, newFirstName, newLastName);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Changes have been saved");
+                alert.showAndWait();
+                Navigator.changeScene(event, "logged-in.fxml", "Profile Updated");
             } else {
                 System.out.println("Failed to update profile");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -270,7 +243,7 @@ public class DBUtils {
     public static void addPost(ActionEvent event, String content, String likesStr, String sharesStr, String date) {
         // Validate the input data
         ValidateUserInput validateUserInput = new ValidateUserInput();
-        if (validateUserInput.hasNoComma(content) || !validateUserInput.isPositiveInteger(likesStr) || !validateUserInput.isPositiveInteger(sharesStr) || !validateUserInput.validateDateFromUser(date)) {
+        if (validateUserInput.hasComma(content) || !validateUserInput.isPositiveInteger(likesStr) || !validateUserInput.isPositiveInteger(sharesStr) || !validateUserInput.validateDateFromUser(date)) {
             System.out.println("Invalid post data. Please check your input.");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Invalid post data. Please check your input.");
@@ -299,7 +272,11 @@ public class DBUtils {
             int rowsAffected = psInsert.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Post added successfully!");
-                changeScene(event, "logged-in.fxml", "Post has been added", currentUser.getUsername(), currentUser.getFirstName(), currentUser.getLastName());
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Post added successfully!");
+                alert.showAndWait();
+                Navigator.changeScene(event, "logged-in.fxml", "Post has been added");
             } else {
                 System.out.println("Failed to add the post.");
                 // Handle the case where the post was not added to the database

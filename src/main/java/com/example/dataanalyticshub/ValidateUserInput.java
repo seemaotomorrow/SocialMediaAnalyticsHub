@@ -1,13 +1,11 @@
 package com.example.dataanalyticshub;
 
 import java.time.DateTimeException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ValidateUserInput {
 
     // Validate if a string has no comma
-    public boolean hasNoComma(String input){
+    public boolean hasComma(String input){
             if(input.contains(",")){
                 return true;
             } else{

@@ -25,12 +25,14 @@ public class LoggedInController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        User currentUser = DBUtils.getCurrentUser();
+        label_welcome.setText("Welcome " + currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
 
         // Go back to the first page when user click logout button
         button_logout.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "first-page.fxml", "Log in", null, null, null);
+                Navigator.changeScene(event, "first-page.fxml", "Log in");
 
             }
         });
@@ -38,23 +40,17 @@ public class LoggedInController implements Initializable {
         button_editProfile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "edit-profile.fxml", "Edit Profile", null, null, null);
+                Navigator.changeScene(event, "edit-profile.fxml", "Edit Profile");
             }
         });
 
         button_addPost.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "add-post.fxml", "Add a Post", null, null, null);
+                Navigator.changeScene(event, "add-post.fxml", "Add a Post");
             }
         });
 
-    }
-
-    public void setUserInformation (String username, String firstname, String lastname){
-        // Pass the old username when creating an instance of EditProfileController
-//        EditProfileController editProfileController = new EditProfileController(username);
-        label_welcome.setText("Welcome " + firstname + " " +lastname + "!");
     }
 
 
