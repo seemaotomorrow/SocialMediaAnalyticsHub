@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
-import java.nio.channels.ConnectionPendingException;
-import java.util.Stack;
-import java.util.concurrent.ConcurrentNavigableMap;
+
+import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
+import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE;
 
 /* Do all the communications with the database
 *  Reference: "JavaFX Login and Signup Form with Database Connection"
@@ -20,7 +20,9 @@ import java.util.concurrent.ConcurrentNavigableMap;
 
 public class DBUtils {
 
-    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username){
+    private static User currentUser;
+
+    public static void changeScene(ActionEvent event, String fxmlFile, String title, String username, String firstname, String lastname){
         Parent root = null;
 
         if (username != null){
@@ -28,7 +30,7 @@ public class DBUtils {
                 FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
                 root = loader.load();
                 LoggedInController loggedInController = loader.getController();
-                loggedInController.setUserInformation(username);
+                loggedInController.setUserInformation(username, firstname, lastname);
             } catch (IOException e){
                 e.printStackTrace();
             }
@@ -61,6 +63,8 @@ public class DBUtils {
         try{
             // connect the database
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // Check if the username is already in use
             psCheckUserExists = connection.prepareStatement("SELECT * FROM UserInfo WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
@@ -80,7 +84,7 @@ public class DBUtils {
                 psInsert.setString(3,username);
                 psInsert.setString(4,password);
                 psInsert.executeUpdate();
-                changeScene(event, "logged-in.fxml", "Welcome!", username);
+                changeScene(event, "logged-in.fxml", "Welcome!", username, firstName, lastName);
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -126,7 +130,7 @@ public class DBUtils {
 
         try{
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
-            preparedStatement = connection.prepareStatement("SELECT password FROM UserInfo WHERE username = ?");
+            preparedStatement = connection.prepareStatement("SELECT password, firstName, lastName FROM UserInfo WHERE username = ?");
             preparedStatement.setString(1,username);
             resultSet = preparedStatement.executeQuery();
 
@@ -139,11 +143,14 @@ public class DBUtils {
             } else {
                 // when user exists in the database
                 while (resultSet.next()){
-                    // retrieve password from database
+                    // retrieve password, firstName, lastName from database
                     String retrievedPassword = resultSet.getString("password");
+                    String retrievedFirstName = resultSet.getString("firstName");
+                    String retrievedLastName = resultSet.getString("lastName");
                     // if the password user input matches the database, show logged-in page
                     if (retrievedPassword.equals(password)){
-                        changeScene(event, "logged-in.fxml","Welcome!", username);
+                        currentUser = new User(username, retrievedFirstName, retrievedLastName, retrievedPassword);
+                        changeScene(event, "logged-in.fxml","Welcome!", username, retrievedFirstName, retrievedLastName);
                     } else {
                         System.out.println("Password did not match");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -180,5 +187,98 @@ public class DBUtils {
             }
         }
 
+    }
+
+    public static void updateProfile(ActionEvent event, String newFirstName, String newLastName, String newUsername, String newPassword){
+        Connection connection = null;
+        // use for query the database
+        PreparedStatement psUpdateProfile = null;
+        PreparedStatement psCheckUserExists = null;
+        // contain the data return from the database when query it
+        ResultSet resultSet = null;
+
+
+        try {
+            // connect the database
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // Check if the new username is already in use
+//            psCheckUserExists = connection.prepareStatement("SELECT * FROM UserInfo WHERE username = ?");
+//            psCheckUserExists.setString(1, newUsername);
+//            resultSet = psCheckUserExists.executeQuery();
+//
+//            if (resultSet.isBeforeFirst()) {
+//                System.out.println("Username is already in use");
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setContentText("Username is already in use. Please choose a different username.");
+//                alert.show();
+//            } else
+            {
+                // Update the user's profile to database
+                psUpdateProfile = connection.prepareStatement("UPDATE UserInfo SET firstName = ?, lastName = ?, username = ?, password = ? WHERE username = ?");
+                psUpdateProfile.setString(1, newFirstName);
+                psUpdateProfile.setString(2, newLastName);
+                psUpdateProfile.setString(3, newUsername);
+                psUpdateProfile.setString(4, newPassword);
+                psUpdateProfile.setString(5, currentUser.getUsername());
+                int rowsAffected = psUpdateProfile.executeUpdate();
+
+
+                if (rowsAffected > 0) {
+                    currentUser = new User(newUsername, newFirstName, newLastName, newPassword);
+                    changeScene(event, "logged-in.fxml", "Profile Updated", newUsername, newFirstName, newLastName);
+                } else {
+                    System.out.println("Failed to update profile");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Failed to update profile. Please try again.");
+                    alert.show();
+                }
+            }
+        } catch (SQLException e){
+            if (e.getErrorCode() == SQLITE_CONSTRAINT.code) {
+                System.out.println("Username is already in use");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Username is already in use. Please choose a different username.");
+                alert.show();
+            } else {
+                e.printStackTrace();
+            }
+        }finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (psCheckUserExists != null) {
+                try {
+                    psCheckUserExists.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (psUpdateProfile != null) {
+                try {
+                    psUpdateProfile.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
     }
 }

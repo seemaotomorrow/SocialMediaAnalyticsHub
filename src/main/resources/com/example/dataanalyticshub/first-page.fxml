@@ -15,12 +15,12 @@
          <children>
             <ImageView fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../Data%20Analytics%20Hub.png" />
+                  <Image url="@./DataAnalyticsHub.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="357.0" prefWidth="327.0">
+      <AnchorPane prefHeight="379.0" prefWidth="340.0">
          <children>
             <Label layoutX="22.0" layoutY="131.0" text="Username">
                <font>
@@ -40,7 +40,7 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="button_login" layoutX="107.0" layoutY="258.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="113.0" style="-fx-background-color: #f984ef;" text="Login">
+            <Button fx:id="button_login" layoutX="107.0" layoutY="258.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="113.0" style="-fx-background-color: #89CFF0;" text="Login">
                <font>
                   <Font size="14.0" />
                </font></Button>

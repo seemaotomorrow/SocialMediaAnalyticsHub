@@ -8,9 +8,14 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.LoggedInController">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #b3cee5;">
          <children>
-            <Button fx:id="button_logout" layoutX="69.0" layoutY="359.0" mnemonicParsing="false" style="-fx-background-color: #f984ef;" text="Logout">
+            <Button fx:id="button_logout" layoutX="69.0" layoutY="359.0" mnemonicParsing="false" style="-fx-background-color: #4682B4;" text="Logout">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="button_editProfile" layoutY="133.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="199.0" style="-fx-background-color: #4682B4;" text="Edit Profile">
                <font>
                   <Font size="14.0" />
                </font>

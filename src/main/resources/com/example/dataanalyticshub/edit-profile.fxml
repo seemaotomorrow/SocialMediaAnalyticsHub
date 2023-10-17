@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.SignUpController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.EditProfileController">
    <children>
       <AnchorPane prefHeight="380.0" prefWidth="260.0">
          <children>
             <ImageView fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@./DataAnalyticsHub.png" />
+                  <Image url="@DataAnalyticsHub.png" />
                </image>
             </ImageView>
          </children>
@@ -32,27 +32,27 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_firstName" layoutX="98.0" layoutY="87.0">
+            <TextField fx:id="tf_newFirstName" layoutX="98.0" layoutY="87.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="tf_password" layoutX="98.0" layoutY="216.0">
+            <TextField fx:id="tf_newPassword" layoutX="98.0" layoutY="216.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="button_signUp" layoutX="107.0" layoutY="258.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="113.0" style="-fx-background-color: #89CFF0;" text="Sign up">
+            <Button fx:id="button_saveChanges" layoutX="99.0" layoutY="256.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="172.0" style="-fx-background-color: #89CFF0;" text="Save changes">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="86.0" layoutY="328.0" text="Already a member?">
+            <Label layoutX="68.0" layoutY="329.0" text="Go back to dashboard">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="button_login" layoutX="193.0" layoutY="324.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Log In!" textFill="#0d14eb" underline="true">
+            <Button fx:id="button_backToDashboard" layoutX="193.0" layoutY="324.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
                <font>
                   <Font size="14.0" />
                </font>
@@ -62,7 +62,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_lastName" layoutX="97.0" layoutY="133.0">
+            <TextField fx:id="tf_newLastName" layoutX="97.0" layoutY="133.0">
                <font>
                   <Font size="14.0" />
                </font>
@@ -72,11 +72,16 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_username" layoutX="98.0" layoutY="177.0">
+            <TextField fx:id="tf_newUsername" layoutX="98.0" layoutY="177.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
+            <Label layoutX="20.0" layoutY="32.0" prefHeight="18.0" prefWidth="110.0" text="Edit Profile">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

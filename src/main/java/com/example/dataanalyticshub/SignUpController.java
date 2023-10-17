@@ -48,7 +48,7 @@ public class SignUpController implements Initializable {
         button_login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "first-page.fxml", "Log in!", null);
+                DBUtils.changeScene(event, "first-page.fxml", "Log in!", null, null, null);
             }
         });
 

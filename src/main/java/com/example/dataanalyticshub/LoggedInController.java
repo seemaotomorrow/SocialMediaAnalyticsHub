@@ -13,26 +13,41 @@ import java.util.ResourceBundle;
 public class LoggedInController implements Initializable {
     @FXML
     private Button button_logout;
+    @FXML
+    private Button button_editProfile;
 
     @FXML
     private Label label_welcome;
 
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // Go back to the first page after user log out
+        // Go back to the first page when user click logout button
         button_logout.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.changeScene(event, "first-page.fxml", "Log in", null);
+                DBUtils.changeScene(event, "first-page.fxml", "Log in", null, null, null);
 
+            }
+        });
+
+        button_editProfile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DBUtils.changeScene(event, "edit-profile.fxml", "Edit Profile", null, null, null);
             }
         });
 
     }
 
-    public void setUserInformation (String username){
-        label_welcome.setText("Welcome " + username + "!");
+    public void setUserInformation (String username, String firstname, String lastname){
+        // Pass the old username when creating an instance of EditProfileController
+//        EditProfileController editProfileController = new EditProfileController(username);
+        label_welcome.setText("Welcome " + firstname + " " +lastname + "!");
     }
+
+
 }
