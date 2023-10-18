@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
@@ -408,14 +409,254 @@ public class DBUtils {
         }
     }
 
+    public static List<Post> retrievePostsByCurrentUser(String username) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        List<Post> userPosts = new ArrayList<>();
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            String sql = "SELECT * FROM posts WHERE userId = (SELECT userId FROM UserInfo WHERE username = ?)";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            resultSet = preparedStatement.executeQuery();
 
 
+            while (resultSet.next()) {
+                // Retrieve post data and create Post objects
+                int id = resultSet.getInt("postId");
+                String content = resultSet.getString("content");
+                int likes = resultSet.getInt("likes");
+                int shares = resultSet.getInt("shares");
+                String date = resultSet.getString("date");
+                String author = DBUtils.getCurrentUser().getUsername();
 
-//    public static List<Post> getAllPosts() {
-//    }
+                // Create a Post object and add it to the list
+                Post post = new Post(id, content, author, likes, shares, date);
+                userPosts.add(post);
+            }
+
+            if (userPosts.isEmpty()) {
+                System.out.println("No post in your collection, please add a post first!");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("No post in your collection, please add a post first!");
+                alert.show();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null){
+                try{
+                    resultSet.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+            if(preparedStatement != null){
+                try{
+                    preparedStatement.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null){
+                try{
+                    connection.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return userPosts;
+    }
+
+    public static List<Post> retrieveTopPostsByLikes(String username, int numberOfPosts) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        List<Post> topPosts = new ArrayList<>();
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // check if the numberOfPosts user want to retrieve > posts in the database
+            String countQuery = "SELECT COUNT(*) FROM posts WHERE userId = (SELECT userId FROM UserInfo WHERE username = ?)";
+            preparedStatement = connection.prepareStatement(countQuery);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int totalPosts = resultSet.getInt(1);
+
+            if (numberOfPosts > totalPosts) {
+                // User requested more posts than available
+                System.out.println("Only " + totalPosts + " posts exist in the collection. Showing all of them.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Only " + totalPosts + " posts exist in the collection. Showing all of them.");
+                alert.showAndWait();
+                numberOfPosts = totalPosts;
+            }
+
+            String query = "SELECT * FROM posts WHERE userId = (SELECT userId FROM UserInfo WHERE username = ?) ORDER BY likes DESC LIMIT ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            preparedStatement.setInt(2, numberOfPosts);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                // Retrieve post data and create Post objects
+                int id = resultSet.getInt("postId");
+                String content = resultSet.getString("content");
+                int likes = resultSet.getInt("likes");
+                int shares = resultSet.getInt("shares");
+                String date = resultSet.getString("date");
+                String author = DBUtils.getCurrentUser().getUsername();
+
+                Post post = new Post(id, content, author, likes, shares, date);
+                topPosts.add(post);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null){
+                try{
+                    resultSet.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+            if(preparedStatement != null){
+                try{
+                    preparedStatement.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null){
+                try{
+                    connection.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (topPosts.isEmpty()) {
+            System.out.println("No post in your collection, please add a post first!");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("No post in your collection, please add a post first!");
+            alert.show();
+        }
+
+        return topPosts;
+    }
+
+    public static List<Post> retrieveTopPostsFromEntireDatabaseByLikes(int numberOfPosts) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        List<Post> topPosts = new ArrayList<>();
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // Check if the numberOfPosts user wants to retrieve is greater than the total posts in the database
+            String countQuery = "SELECT COUNT(*) FROM posts";
+            preparedStatement = connection.prepareStatement(countQuery);
+
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int totalPosts = resultSet.getInt(1);
+
+            if (numberOfPosts > totalPosts) {
+                // User requested more posts than available
+                System.out.println("Only " + totalPosts + " posts exist in the collection. Showing all of them.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Only " + totalPosts + " posts exist in the collection. Showing all of them.");
+                alert.showAndWait();
+                numberOfPosts = totalPosts;
+            }
+
+            String query = """
+                SELECT posts.*, userInfo.username AS author
+                FROM posts
+                JOIN (
+                    SELECT userId, username
+                    FROM userInfo
+                ) AS userInfo ON posts.userId = userInfo.userId
+                ORDER BY likes DESC
+                LIMIT ?""";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, numberOfPosts);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                // Retrieve post data and create Post objects
+                int id = resultSet.getInt("postId");
+                String content = resultSet.getString("content");
+                int likes = resultSet.getInt("likes");
+                int shares = resultSet.getInt("shares");
+                String date = resultSet.getString("date");
+                String author = resultSet.getString("author");
+
+                Post post = new Post(id, content, author, likes, shares, date);
+                topPosts.add(post);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (topPosts.isEmpty()) {
+            System.out.println("No posts found in the database.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setContentText("No posts found in the database.");
+            alert.showAndWait();
+        }
+
+        return topPosts;
+
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }
+
 
 
 }

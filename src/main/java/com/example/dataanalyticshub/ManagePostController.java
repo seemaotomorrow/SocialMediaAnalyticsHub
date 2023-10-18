@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ManagePostController implements Initializable {
@@ -18,9 +19,17 @@ public class ManagePostController implements Initializable {
     @FXML
     private Button button_remove;
     @FXML
+    private Button button_showAllPosts;
+    @FXML
+    private Button button_topNPostsByLikes;
+    @FXML
+    private Button button_topNPostsByLikesInDB;
+    @FXML
     private Button button_backToDashboard;
     @FXML
     private TextField  tf_postIdFromUser;
+    @FXML
+    private TextField  tf_nFromUser;
 
     @FXML
     private TableView<Post> tableView;
@@ -49,7 +58,7 @@ public class ManagePostController implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
 
-        button_retrieve.setOnAction(event -> retrievePost());
+        button_retrieve.setOnAction(event -> {retrievePostById();});
 
         button_backToDashboard.setOnAction(event -> Navigator.changeScene(event, "logged-in.fxml", "Log in!"));
 
@@ -70,10 +79,30 @@ public class ManagePostController implements Initializable {
                 }
             }
         });
+
+        button_showAllPosts.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                retrievePostsByCurrentUser();
+            }
+        });
+
+        button_topNPostsByLikes.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                retrieveTopNPostsByLikes();
+            }
+        });
+        button_topNPostsByLikesInDB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                retrieveTopPostsFromEntireDatabaseByLikes();
+            }
+        });
     }
 
     @FXML
-    private void retrievePost() {
+    private void retrievePostById() {
         String postID = tf_postIdFromUser.getText();
         if (!postID.isEmpty()){
             Post retrievedPost = DBUtils.retrievePost(postID);
@@ -86,4 +115,55 @@ public class ManagePostController implements Initializable {
             alert.show();
         }
     }
+
+    @FXML
+    private void retrievePostsByCurrentUser() {
+        User currentUser = DBUtils.getCurrentUser();
+        String username = currentUser.getUsername(); // Get the currently logged-in user's username
+        List<Post> allPosts = DBUtils.retrievePostsByCurrentUser(username);
+
+        ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+        tableView.setItems(data);
+    }
+
+    @FXML
+    private void retrieveTopNPostsByLikes(){
+        String nFromUser = tf_nFromUser.getText();
+
+        if (!nFromUser.isEmpty()){
+            User currentUser = DBUtils.getCurrentUser();
+            String username = currentUser.getUsername(); // Get the currently logged-in user's username
+            int n = Integer.parseInt(nFromUser);
+            List<Post> allPosts = DBUtils.retrieveTopPostsByLikes(username,n);
+
+            ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+            tableView.setItems(data);
+        } else {
+            System.out.print("Please specify the number of posts to retrieve (N): ");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Please specify the number of posts to retrieve");
+            alert.show();
+        }
+    }
+
+    @FXML
+    private void retrieveTopPostsFromEntireDatabaseByLikes() {
+        String nFromUser = tf_nFromUser.getText();
+
+        if (!nFromUser.isEmpty()){
+            User currentUser = DBUtils.getCurrentUser();
+            String username = currentUser.getUsername(); // Get the currently logged-in user's username
+            int n = Integer.parseInt(nFromUser);
+            List<Post> allPosts = DBUtils.retrieveTopPostsFromEntireDatabaseByLikes(n);
+
+            ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+            tableView.setItems(data);
+        } else {
+            System.out.print("Please specify the number of posts to retrieve (N): ");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Please specify the number of posts to retrieve");
+            alert.show();
+        }
+    }
+
 }
