@@ -30,12 +30,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button fx:id="button_retrievePost" mnemonicParsing="false" prefHeight="29.0" prefWidth="228.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Retrieve a post">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="button_removePost" mnemonicParsing="false" prefHeight="27.0" prefWidth="239.0" style="-fx-background-color: #4682B4;" text="Remove a post">
+                  <Button fx:id="button_managePost" mnemonicParsing="false" prefHeight="29.0" prefWidth="228.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Manage post (retrieve/remove)">
                      <font>
                         <Font size="14.0" />
                      </font>

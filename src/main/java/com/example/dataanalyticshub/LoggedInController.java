@@ -18,7 +18,7 @@ public class LoggedInController implements Initializable {
     @FXML
     private Button button_addPost;
     @FXML
-    private Button button_retrievePost;
+    private Button button_managePost;
     @FXML
     private Label label_welcome;
 
@@ -50,10 +50,10 @@ public class LoggedInController implements Initializable {
             }
         });
 
-        button_retrievePost.setOnAction(new EventHandler<ActionEvent>() {
+        button_managePost.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Navigator.changeScene(event, "retrieve-post.fxml", "Retrieve a Post");
+                Navigator.changeScene(event, "manage-post.fxml", "Retrieve a Post");
             }
         });
 

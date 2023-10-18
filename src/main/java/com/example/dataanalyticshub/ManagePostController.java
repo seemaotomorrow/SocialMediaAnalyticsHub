@@ -10,13 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class RetrievePostController implements Initializable {
+public class ManagePostController implements Initializable {
     @FXML
     private Button button_retrieve;
+    @FXML
+    private Button button_remove;
     @FXML
     private Button button_backToDashboard;
     @FXML
@@ -52,6 +52,24 @@ public class RetrievePostController implements Initializable {
         button_retrieve.setOnAction(event -> retrievePost());
 
         button_backToDashboard.setOnAction(event -> Navigator.changeScene(event, "logged-in.fxml", "Log in!"));
+
+        button_remove.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String postID = tf_postIdFromUser.getText();
+                if (!postID.isEmpty()){
+                    DBUtils.removePost(postID);
+                    // clear the input field and refresh the TableView
+                    tf_postIdFromUser.clear();
+                    tableView.getItems().clear();
+                } else {
+                    System.out.println("Please provide a post ID to remove!");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Please provide a post ID to remove!");
+                    alert.show();
+                }
+            }
+        });
     }
 
     @FXML

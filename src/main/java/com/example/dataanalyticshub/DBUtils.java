@@ -365,6 +365,52 @@ public class DBUtils {
         return post; // Return null if the post is not found
     }
 
+    public static void removePost(String postId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            preparedStatement = connection.prepareStatement("DELETE FROM posts WHERE postId = ?");
+            preparedStatement.setString(1, postId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Post with ID " + postId + " has been successfully removed.");
+                alert.showAndWait();
+
+            } else {
+                System.out.println("No post found with ID " + postId + ". Nothing was removed.");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("No post found with ID " + postId + ". Nothing was removed.");
+                alert.show();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close all the resources
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
+
 //    public static List<Post> getAllPosts() {
 //    }
     public static User getCurrentUser() {

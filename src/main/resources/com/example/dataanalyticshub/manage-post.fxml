@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.RetrievePostController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.ManagePostController">
    <children>
       <AnchorPane prefHeight="379.0" prefWidth="603.0">
          <children>
@@ -18,12 +18,12 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="73.0" layoutY="330.0" text="Go back to dashboard">
+            <Label layoutX="198.0" layoutY="346.0" text="Go back to dashboard">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="button_backToDashboard" layoutX="203.0" layoutY="326.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
+            <Button fx:id="button_backToDashboard" layoutX="328.0" layoutY="341.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
                <font>
                   <Font size="14.0" />
                </font>
@@ -33,9 +33,9 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="19.0" layoutY="35.0" prefHeight="24.0" prefWidth="238.0" text="Retrieve a post by post ID">
+            <Label layoutX="19.0" layoutY="40.0" prefHeight="24.0" prefWidth="238.0" text="Retrieve a post by post ID:">
                <font>
-                  <Font name="System Bold" size="19.0" />
+                  <Font name="System Bold" size="15.0" />
                </font>
             </Label>
             <TextField fx:id="tf_postIdFromUser" layoutX="73.0" layoutY="72.0" prefHeight="24.0" prefWidth="172.0">
@@ -53,6 +53,16 @@
                   <TableColumn fx:id="colDate" prefWidth="115.0" text="Date" />
               </columns>
             </TableView>
+            <Button fx:id="button_remove" layoutX="500.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Remove">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="225.0" layoutY="8.0" prefHeight="38.0" prefWidth="136.0" text="Manage Posts" textAlignment="CENTER">
+               <font>
+                  <Font name="Al Nile" size="21.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>
