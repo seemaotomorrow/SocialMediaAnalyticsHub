@@ -18,10 +18,9 @@ public class LoggedInController implements Initializable {
     @FXML
     private Button button_addPost;
     @FXML
+    private Button button_retrievePost;
+    @FXML
     private Label label_welcome;
-
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,6 +47,13 @@ public class LoggedInController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 Navigator.changeScene(event, "add-post.fxml", "Add a Post");
+            }
+        });
+
+        button_retrievePost.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Navigator.changeScene(event, "retrieve-post.fxml", "Retrieve a Post");
             }
         });
 

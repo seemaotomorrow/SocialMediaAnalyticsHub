@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.RetrievePostController">
+   <children>
+      <AnchorPane prefHeight="379.0" prefWidth="603.0">
+         <children>
+            <Button fx:id="button_retrieve" layoutX="257.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Retrieve">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="73.0" layoutY="330.0" text="Go back to dashboard">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Button fx:id="button_backToDashboard" layoutX="203.0" layoutY="326.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="19.0" layoutY="76.0" text="Post ID" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="76.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="19.0" layoutY="35.0" prefHeight="24.0" prefWidth="238.0" text="Retrieve a post by post ID">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_postIdFromUser" layoutX="73.0" layoutY="72.0" prefHeight="24.0" prefWidth="172.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TableView fx:id="tableView" layoutX="19.0" layoutY="111.0" prefHeight="190.0" prefWidth="563.0">
+              <columns>
+                <TableColumn fx:id="colPostID" prefWidth="75.0" text="Post ID" />
+                <TableColumn fx:id="colContent" prefWidth="151.0" text="Content" />
+                  <TableColumn fx:id="colAuthor" prefWidth="66.0" text="Author" />
+                  <TableColumn fx:id="colLikes" prefWidth="72.0" text="Likes" />
+                  <TableColumn fx:id="colShares" prefWidth="83.0" text="shares" />
+                  <TableColumn fx:id="colDate" prefWidth="115.0" text="Date" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>

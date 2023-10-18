@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
+import java.util.List;
 
 import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
 
@@ -303,7 +304,72 @@ public class DBUtils {
         }
     }
 
+    public static Post retrievePost(String postID) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        // Create a Post object to store retrieved details
+        Post post = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            preparedStatement = connection.prepareStatement("SELECT * FROM posts WHERE postId = ?");
+            preparedStatement.setString(1, postID);
+            resultSet = preparedStatement.executeQuery();
+
+            // if the provided post ID doesn't exist
+            if (!resultSet.isBeforeFirst()) {
+                System.out.println("Post ID is not found in the database");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Provided Post ID dose not exist");
+                alert.show();
+            } else {
+                // post ID exists
+                // Retrieve post details from the database
+                int id = resultSet.getInt("postId");
+                String content = resultSet.getString("content");
+                int likes = resultSet.getInt("likes");
+                int shares = resultSet.getInt("shares");
+                String date = resultSet.getString("date");
+                String author = DBUtils.getCurrentUser().getUsername();
+
+                post = new Post(id, content,author, likes, shares, date);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null){
+                try{
+                    resultSet.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+
+            if(preparedStatement != null){
+                try{
+                    preparedStatement.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+
+            if (connection != null){
+                try{
+                    connection.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return post; // Return null if the post is not found
+    }
+
+//    public static List<Post> getAllPosts() {
+//    }
     public static User getCurrentUser() {
         return currentUser;
     }
+
+
 }
