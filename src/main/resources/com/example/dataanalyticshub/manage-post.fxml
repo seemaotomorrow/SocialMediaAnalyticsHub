@@ -11,19 +11,19 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.ManagePostController">
    <children>
-      <AnchorPane prefHeight="400.0" prefWidth="637.0">
+      <AnchorPane prefHeight="400.0" prefWidth="645.0">
          <children>
             <Button fx:id="button_retrieve" layoutX="257.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Retrieve">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="439.0" layoutY="369.0" text="Go back to dashboard">
+            <Label layoutX="447.0" layoutY="369.0" text="Go back to dashboard">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="button_backToDashboard" layoutX="569.0" layoutY="364.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
+            <Button fx:id="button_backToDashboard" layoutX="575.0" layoutY="365.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
                <font>
                   <Font size="14.0" />
                </font>
@@ -63,7 +63,7 @@
                   <Font name="Al Nile" size="21.0" />
                </font>
             </Label>
-            <Button fx:id="button_showAllPosts" layoutX="481.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="102.0" style="-fx-background-color: #89CFF0;" text="All posts">
+            <Button fx:id="button_showAllPosts" layoutX="453.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="130.0" style="-fx-background-color: #89CFF0;" text="Show All posts">
                <font>
                   <Font size="14.0" />
                </font>
@@ -84,6 +84,11 @@
                </font>
             </TextField>
             <Button fx:id="button_topNPostsByLikesInDB" layoutX="201.0" layoutY="351.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="184.0" style="-fx-background-color: #89CFF0;" text="By Likes in whole database">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="button_export" layoutX="447.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Export">
                <font>
                   <Font size="14.0" />
                </font>

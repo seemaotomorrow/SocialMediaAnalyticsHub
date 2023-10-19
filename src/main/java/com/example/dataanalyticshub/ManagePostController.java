@@ -8,7 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -24,6 +26,8 @@ public class ManagePostController implements Initializable {
     private Button button_topNPostsByLikes;
     @FXML
     private Button button_topNPostsByLikesInDB;
+    @FXML
+    private Button button_export;
     @FXML
     private Button button_backToDashboard;
     @FXML
@@ -59,6 +63,7 @@ public class ManagePostController implements Initializable {
 
 
         button_retrieve.setOnAction(event -> {retrievePostById();});
+        button_export.setOnAction(event -> {retrievePostById();});
 
         button_backToDashboard.setOnAction(event -> Navigator.changeScene(event, "logged-in.fxml", "Log in!"));
 
@@ -166,4 +171,44 @@ public class ManagePostController implements Initializable {
         }
     }
 
-}
+    @FXML
+    private void exportPostToCSV (){
+        String postID = tf_postIdFromUser.getText();
+        if (!postID.isEmpty()){
+            User currentUser = DBUtils.getCurrentUser();
+            String username = currentUser.getUsername(); // Get the currently logged-in user's username
+            // Prompt the user to choose a folder and file name for the export
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Post to CSV");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+            File selectedFile = fileChooser.showSaveDialog(button_export.getScene().getWindow());
+
+            if (selectedFile != null) {
+                String exportFolderPath = selectedFile.getParent();
+                String fileName = selectedFile.getName();
+
+                // Call the DBUtils method to export the post to CSV
+                boolean exportSuccess = DBUtils.exportPostToCSV(username, exportFolderPath, fileName);
+
+                if (exportSuccess) {
+                    // Show a success message
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setContentText("Post exported to CSV successfully.");
+                    alert.show();
+                } else {
+                    // Show an error message if the export failed
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Failed to export post to CSV.");
+                    alert.show();
+                }
+            }
+        } else {
+            System.out.println("Please provide a post ID to export post");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Please provide a post ID to export post");
+            alert.show();
+        }
+    }
+    }

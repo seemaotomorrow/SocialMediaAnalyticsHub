@@ -3,6 +3,10 @@ package com.example.dataanalyticshub;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -648,15 +652,82 @@ public class DBUtils {
             alert.setContentText("No posts found in the database.");
             alert.showAndWait();
         }
-
         return topPosts;
+    }
 
+    public static boolean exportPostToCSV(String username, String exportFolderPath, String fileName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            String query = "SELECT * FROM posts WHERE postId = (SELECT postId FROM UserInfo WHERE username = ?)";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                // Retrieve post data and create Post objects
+                int id = resultSet.getInt("postId");
+                String content = resultSet.getString("content");
+                int likes = resultSet.getInt("likes");
+                int shares = resultSet.getInt("shares");
+                String date = resultSet.getString("date");
+                String author = DBUtils.getCurrentUser().getUsername();
+
+                // Construct the CSV data
+                String csvData = id + "," + content + "," + author + "," + likes + "," + shares + "," + date;
+
+                // Create the file path and check if it exists
+                File exportFolder = new File(exportFolderPath);
+                if (!exportFolder.exists()) {
+                    exportFolder.mkdirs();
+                }
+
+                // Create the file and write CSV data
+                File exportFile = new File(exportFolder, fileName);
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(exportFile))) {
+                    writer.write(csvData);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return true; // Export successful
+            } else {
+                System.out.println("Post not found.");
+                return false; // Post not found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Export failed
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public static User getCurrentUser() {
         return currentUser;
     }
-
-
 
 }
