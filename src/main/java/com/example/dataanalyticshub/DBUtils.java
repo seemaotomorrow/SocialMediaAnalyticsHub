@@ -2,6 +2,7 @@ package com.example.dataanalyticshub;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.sqlite.SQLiteErrorCode.SQLITE_CONSTRAINT;
 
@@ -734,7 +736,7 @@ public class DBUtils {
         }
     }
 
-    public static void upgradeToVIP (String username) {
+    public static void upgradeToVIP (ActionEvent event,String username) {
         Connection connection = null;
         PreparedStatement psUpdateToVIP = null;
 
@@ -751,7 +753,14 @@ public class DBUtils {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information Dialog");
                 alert.setContentText("Upgrade to VIP successfully.\n Please log out and log in again to access VIP functionalities.");
-                alert.showAndWait();
+                ButtonType logOutButton = new ButtonType("Log Out");
+                alert.getButtonTypes().setAll(logOutButton);
+                // Show the dialog and wait for the user's choice
+                Optional<ButtonType> userChoice = alert.showAndWait();
+
+                if (userChoice.isPresent() && userChoice.get() == logOutButton) {
+                    Navigator.changeScene(event, "first-page.fxml","Data Analytics Hub");
+                }
             } else {
                 System.out.println("Failed upgrade to VIP.");
             }

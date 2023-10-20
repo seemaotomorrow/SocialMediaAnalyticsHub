@@ -74,39 +74,26 @@ public class LoggedInController implements Initializable {
         button_upgradeToVIP.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                upgradeToVIPClicked();
+                Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationAlert.setTitle("VIP Upgrade Confirmation");
+                confirmationAlert.setHeaderText("Upgrade to VIP");
+                confirmationAlert.setContentText("Would you like to subscribe to the application for a monthly fee of $0?");
+
+                // Customize the buttons for user choice
+                ButtonType yesButton = new ButtonType("Yes");
+                ButtonType noButton = new ButtonType("No");
+                confirmationAlert.getButtonTypes().setAll(yesButton, noButton);
+
+                // Show the dialog and wait for the user's choice
+                Optional<ButtonType> userChoice = confirmationAlert.showAndWait();
+
+                if (userChoice.isPresent() && userChoice.get() == yesButton) {
+                    // The user agreed to upgrade to VIP
+                    User currentUser = DBUtils.getCurrentUser();
+                    String username = currentUser.getUsername();
+                    DBUtils.upgradeToVIP(event, username);
+                }
             }
         });
-
-    }
-
-    @FXML
-    private void upgradeToVIPClicked() {
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationAlert.setTitle("VIP Upgrade Confirmation");
-        confirmationAlert.setHeaderText("Upgrade to VIP");
-        confirmationAlert.setContentText("Would you like to subscribe to the application for a monthly fee of $0?");
-
-        // Customize the buttons for user choice
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
-        confirmationAlert.getButtonTypes().setAll(yesButton, noButton);
-
-        // Show the dialog and wait for the user's choice
-        Optional<ButtonType> userChoice = confirmationAlert.showAndWait();
-
-        if (userChoice.isPresent() && userChoice.get() == yesButton) {
-            // The user agreed to upgrade to VIP
-            User currentUser = DBUtils.getCurrentUser();
-            String username = currentUser.getUsername();
-            DBUtils.upgradeToVIP(username);
-            label_youAreNotVIP.setText("You are a VIP member now!");
-            // Hide the upgrade ro VIP button if choose yes
-            button_upgradeToVIP.setVisible(false);
-
-
         }
     }
-
-
-}
