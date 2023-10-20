@@ -49,18 +49,28 @@ public class DBUtils {
                 alert.setContentText("You cannot use this username");
                 alert.show();
             } else{
-                psInsert  =connection.prepareStatement("INSERT INTO UserInfo (firstName, lastName, username, password) VALUES(?, ?, ?, ?)");
+                psInsert  =connection.prepareStatement("INSERT INTO UserInfo (firstName, lastName, username, password, isVIP) VALUES(?, ?, ?, ?, ?)");
                 psInsert.setString(1,firstName);
                 psInsert.setString(2,lastName);
                 psInsert.setString(3,username);
                 psInsert.setString(4,password);
-                psInsert.executeUpdate();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setContentText("Your account has been created successfully");
-                alert.showAndWait();
-                Navigator.changeScene(event, "logged-in.fxml", "Profile Updated");
-                Navigator.changeScene(event, "logged-in.fxml", "Welcome!");
+                psInsert.setString(5,"No");
+                int rowsAffected = psInsert.executeUpdate();
+
+                // if the new info successfully update to database
+                if (rowsAffected > 0) {
+                    currentUser = new User(username, firstName, lastName, password);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setContentText("Your account has been created successfully");
+                    alert.showAndWait();
+                    Navigator.changeScene(event, "logged-in.fxml", "Welcome!");
+                } else {
+                    System.out.println("Failed to sign up");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Failed to sign up, please sign up again");
+                    alert.show();
+                }
             }
         } catch (SQLException e){
             e.printStackTrace();

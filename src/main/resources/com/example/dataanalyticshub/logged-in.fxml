@@ -13,24 +13,24 @@
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="167.0" style="-fx-background-color: #b3cee5;">
          <children>
-            <Button fx:id="button_logout" layoutX="80.0" layoutY="359.0" mnemonicParsing="false" style="-fx-background-color: #4682B4;" text="Logout">
+            <Button fx:id="button_logout" layoutX="80.0" layoutY="359.0" mnemonicParsing="false" style="-fx-background-color: #4682B4;" text="Logout" textFill="#f8f6f6">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
             <VBox layoutY="108.0" prefHeight="197.0" prefWidth="220.0">
                <children>
-                  <Button fx:id="button_editProfile" mnemonicParsing="false" prefHeight="29.0" prefWidth="221.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Edit Profile">
+                  <Button fx:id="button_editProfile" mnemonicParsing="false" prefHeight="29.0" prefWidth="221.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Edit Profile" textFill="#f2efef">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button fx:id="button_addPost" mnemonicParsing="false" prefHeight="27.0" prefWidth="228.0" style="-fx-background-color: #4682B4;" text="Add a post">
+                  <Button fx:id="button_addPost" mnemonicParsing="false" prefHeight="27.0" prefWidth="228.0" style="-fx-background-color: #4682B4;" text="Add a post" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button fx:id="button_managePost" mnemonicParsing="false" prefHeight="29.0" prefWidth="228.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Manage post (retrieve/remove)">
+                  <Button fx:id="button_managePost" mnemonicParsing="false" prefHeight="29.0" prefWidth="228.0" style="-fx-background-color: #4682B4; -fx-border-color: #000000;" text="Manage post (retrieve/remove)" textFill="#fcf9f9">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -39,7 +39,7 @@
             </VBox>
             <ImageView fitHeight="53.0" fitWidth="220.0" layoutX="-1.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../../../../Downloads/Data%20Analytics%20Hub%20(1).png" />
+                  <Image url="@./logo.png" />
                </image>
             </ImageView>
          </children>
@@ -51,6 +51,16 @@
                   <Font size="18.0" />
                </font>
             </Label>
+            <Label fx:id="label_youAreNotVIP" layoutX="25.0" layoutY="87.0" prefHeight="23.0" prefWidth="302.0" text="You are not a VIP member yet">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Button fx:id="button_upgradeToVIP" layoutX="83.0" layoutY="130.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="205.0" style="-fx-background-color: #4682B4;" text="Upgade to VIP" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
          </children></AnchorPane>
    </children>
 </HBox>

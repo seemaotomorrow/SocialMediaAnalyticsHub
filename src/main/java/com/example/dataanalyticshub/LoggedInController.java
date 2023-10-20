@@ -20,6 +20,8 @@ public class LoggedInController implements Initializable {
     @FXML
     private Button button_managePost;
     @FXML
+    private Button button_upgardeToVIP;
+    @FXML
     private Label label_welcome;
 
     @Override
