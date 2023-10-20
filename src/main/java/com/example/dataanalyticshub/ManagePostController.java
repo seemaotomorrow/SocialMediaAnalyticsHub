@@ -6,9 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
@@ -63,7 +65,7 @@ public class ManagePostController implements Initializable {
 
 
         button_retrieve.setOnAction(event -> {retrievePostById();});
-        button_export.setOnAction(event -> {retrievePostById();});
+        button_export.setOnAction(this::exportButtonClicked);
 
         button_backToDashboard.setOnAction(event -> Navigator.changeScene(event, "logged-in.fxml", "Log in!"));
 
@@ -173,39 +175,31 @@ public class ManagePostController implements Initializable {
             alert.show();
         }
     }
-
     @FXML
-    private void exportPostToCSV (){
-        String postID = tf_postIdFromUser.getText();
-        if (!postID.isEmpty()){
-            User currentUser = DBUtils.getCurrentUser();
-            String username = currentUser.getUsername(); // Get the currently logged-in user's username
-            // Prompt the user to choose a folder and file name for the export
+    private void exportButtonClicked(ActionEvent event) {
+        String postId = tf_postIdFromUser.getText();
+        User currentUser = DBUtils.getCurrentUser();
+        String username = currentUser.getUsername();
+
+        if (!postId.isEmpty()){
+            // use file chooser to implement this function
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Export Post to CSV");
+            fileChooser.setTitle("Save Post as CSV");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-            File selectedFile = fileChooser.showSaveDialog(button_export.getScene().getWindow());
+            Node node = (Node) event.getSource();
 
-            if (selectedFile != null) {
-                String exportFolderPath = selectedFile.getParent();
-                String fileName = selectedFile.getName();
+            Stage stage = (Stage) node.getScene().getWindow();
+            // Opening a dialog box and returns a file after click save
+            // returns null if cancel
+            File file = fileChooser.showSaveDialog(stage);
 
-                // Call the DBUtils method to export the post to CSV
-                boolean exportSuccess = DBUtils.exportPostToCSV(username, exportFolderPath, fileName);
+            if (file != null) {
+                // Extract folder path and filename from the chosen file
+                String folderPath = file.getParent();
+                String fileName = file.getName().replaceAll(".csv", "");
 
-                if (exportSuccess) {
-                    // Show a success message
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Success");
-                    alert.setContentText("Post exported to CSV successfully.");
-                    alert.show();
-                } else {
-                    // Show an error message if the export failed
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setContentText("Failed to export post to CSV.");
-                    alert.show();
-                }
+                // Call the exportPostToCSV method from DBUtils
+                DBUtils.exportPostToCSV(postId,username, folderPath, fileName);
             }
         } else {
             System.out.println("Please provide a post ID to export post");
@@ -214,4 +208,5 @@ public class ManagePostController implements Initializable {
             alert.show();
         }
     }
-    }
+}
+

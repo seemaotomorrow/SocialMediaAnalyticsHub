@@ -656,16 +656,16 @@ public class DBUtils {
         return topPosts;
     }
 
-    public static boolean exportPostToCSV(String username, String exportFolderPath, String fileName) {
+    public static void exportPostToCSV(String postID, String username, String exportFolderPath, String fileName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
-            String query = "SELECT * FROM posts WHERE postId = (SELECT postId FROM UserInfo WHERE username = ?)";
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, username);
+            preparedStatement = connection.prepareStatement("SELECT * FROM posts WHERE postId = ? AND userId = (SELECT userId FROM UserInfo WHERE username = ?)");
+            preparedStatement.setString(1, postID);
+            preparedStatement.setString(2, username);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -693,14 +693,11 @@ public class DBUtils {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                return true; // Export successful
             } else {
                 System.out.println("Post not found.");
-                return false; // Post not found
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // Export failed
         } finally {
             // Close resources (resultSet, preparedStatement, connection)
             if (resultSet != null) {
