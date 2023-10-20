@@ -785,6 +785,65 @@ public class DBUtils {
         }
     }
 
+    public static CategoryShareCounts getShareCategoryCounts(String username) {
+        Connection connection = null;
+        PreparedStatement psSelectCategorizedShares = null;
+        ResultSet resultSet = null;
+        // create a CategoryShareCounts instance to store the result
+        CategoryShareCounts shareCounts = new CategoryShareCounts();
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+
+            // Create a SQL query to count shares in each category
+            String query = "SELECT " +
+                "SUM(CASE WHEN shares >= 0 AND shares <= 99 THEN 1 ELSE 0 END) as category0_99, " +
+                "SUM(CASE WHEN shares >= 100 AND shares <= 999 THEN 1 ELSE 0 END) as category100_999, " +
+                "SUM(CASE WHEN shares >= 1000 THEN 1 ELSE 0 END) as category1000_plus " +
+                "FROM posts WHERE userId = (SELECT userId FROM UserInfo WHERE username = ?)";
+
+            psSelectCategorizedShares = connection.prepareStatement(query);
+            psSelectCategorizedShares.setString(1, username);
+
+            resultSet = psSelectCategorizedShares.executeQuery();
+
+            if (resultSet.next()) {
+                shareCounts.setCategory0_99(resultSet.getInt("category0_99"));
+                shareCounts.setCategory100_999(resultSet.getInt("category100_999"));
+                shareCounts.setCategory1000_plus(resultSet.getInt("category1000_plus"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (resultSet, preparedStatement, connection)
+            // Close resources (resultSet, preparedStatement, connection)
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (psSelectCategorizedShares != null) {
+                try {
+                    psSelectCategorizedShares.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return shareCounts;
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }

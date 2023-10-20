@@ -1,16 +1,17 @@
 Name: Mingjian Mao
 Student ID: s3968520
+COSC1295 Assignment 2 S2 2023
+
+IDE: IntelliJ
+Java version: 20
+JavaFX version: 20
+Database: SQLite
+Link to Github repository: https://github.com/seemaotomorrow/AP-A2-DataAnalyticsHub
 
 * Summary
-This Java program reads posts from a CSV file, stores them in a hashmap post collection, and provides functionalities for interacting with the stored posts. The program consists of the following main components:
-
-
-
 
 
 * How to run program from command line:
-
-
 
 
 
