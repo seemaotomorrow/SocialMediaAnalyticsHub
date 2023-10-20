@@ -9,7 +9,7 @@ Database: SQLite
 Link to Github repository: https://github.com/seemaotomorrow/AP-A2-DataAnalyticsHub
 
 * Summary
-
+The application accept multiple user. Can analyse the social media post.
 
 * How to run program from command line:
 
