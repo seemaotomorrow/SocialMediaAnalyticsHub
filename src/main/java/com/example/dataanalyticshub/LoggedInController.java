@@ -108,7 +108,14 @@ public class LoggedInController implements Initializable {
                     // The user agreed to upgrade to VIP
                     User currentUser = DBUtils.getCurrentUser();
                     String username = currentUser.getUsername();
-                    DBUtils.upgradeToVIP(event, username);
+                    boolean upgraded =  DBUtils.upgradeToVIP(username);
+                    if (upgraded){
+                        Navigator.changeScene(event, "first-page.fxml","Data Analytics Hub");
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Failed to upgrade to VIP.");
+                        alert.show();
+                    }
                 }
             }
         });
@@ -155,7 +162,6 @@ public class LoggedInController implements Initializable {
     }
 
     @FXML
-    // Event handler for the "button_importPostsFromCSV"
     private void importPostsFromCSV(ActionEvent event) {
         // Create a FileChooser to allow the user to select a CSV file
         FileChooser fileChooser = new FileChooser();
@@ -170,13 +176,18 @@ public class LoggedInController implements Initializable {
             String csvFilePath = selectedFile.getAbsolutePath();
 
             // Call the bulkImportFromCSV method from your DBUtils class
-            DBUtils.bulkImportFromCSV(csvFilePath);
-
-            // Prompt user after all the posts been added successfully
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information Dialog");
-            alert.setContentText("Posts from csv file been added successfully to your collection.");
-            alert.showAndWait();
+            boolean isImported = DBUtils.bulkImportFromCSV(csvFilePath);
+            if (isImported){
+                // Prompt user after all the posts been added successfully
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Posts from csv file been added successfully to your collection.");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("The csv file does not follow the correct format");
+                alert.show();
+            }
         }
     }
 }

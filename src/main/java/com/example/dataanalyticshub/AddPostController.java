@@ -27,24 +27,42 @@ public class AddPostController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        tf_content.setPromptText("Content cannot contain comma");
+        tf_likes.setPromptText("Please provided a positive int");
+        tf_shares.setPromptText("Please provided a positive int");
+        tf_date.setPromptText("dd/MM/yyyy HH:mm");
         button_addPost.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 // check if the input are not empty
-                if (!tf_content.getText().trim().isEmpty() && !tf_likes.getText().trim().isEmpty() && !tf_shares.getText().trim().isEmpty() && !tf_date.getText().trim().isEmpty()) {
-                    boolean addedSuccessfully = DBUtils.addPost(event, tf_content.getText(), tf_likes.getText(), tf_shares.getText(), tf_date.getText());
-                    if (addedSuccessfully){
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Information Dialog");
-                        alert.setContentText("Post been added successfully.");
-                        alert.showAndWait();
-                        Navigator.changeScene(event, "logged-in.fxml", "Post has been added");
+                String content = tf_content.getText();
+                String likes = tf_likes.getText();
+                String shares = tf_shares.getText();
+                String date = tf_date.getText();
+                // check if user input all the form
+                if (!content.trim().isEmpty() && !likes.trim().isEmpty() && !shares.trim().isEmpty() && !date.trim().isEmpty()) {
+                    ValidateUserInput validator = new ValidateUserInput();
+                    // validate user input
+                    if (!validator.hasComma(content) && validator.isPositiveInteger(likes) && validator.isPositiveInteger(shares) && validator.validateDateFromUser(date)) {
+                        boolean addedSuccessfully = DBUtils.addPost(tf_content.getText(), tf_likes.getText(), tf_shares.getText(), tf_date.getText());
+                        if (addedSuccessfully){
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Information Dialog");
+                            alert.setContentText("Post been added successfully.");
+                            alert.showAndWait();
+                            Navigator.changeScene(event, "logged-in.fxml", "Post has been added");
+                        } else {
+                            System.out.println("Fail to add a post");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("Fail to add a post");
+                            alert.show();
+                        }
                     } else {
                         System.out.println("Fail to add a post");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("Fail to add a post");
+                        alert.setContentText("The provided information is not correct");
                         alert.show();
+
                     }
                 } else {
                     System.out.println("Please fill in all the information");

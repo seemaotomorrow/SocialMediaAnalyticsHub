@@ -33,7 +33,18 @@ public class SignUpController implements Initializable {
             public void handle(ActionEvent event) {
 
                 if (!tf_firstName.getText().trim().isEmpty() && !tf_lastName.getText().trim().isEmpty() && !tf_username.getText().trim().isEmpty() &&!tf_password.getText().trim().isEmpty()){
-                    DBUtils.signUpUser(event,tf_firstName.getText(),tf_lastName.getText(), tf_username.getText(), tf_password.getText());
+                    boolean signedUp = DBUtils.signUpUser(tf_firstName.getText(),tf_lastName.getText(), tf_username.getText(), tf_password.getText());
+                    if (signedUp){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Information Dialog");
+                        alert.setContentText("Your account has been created successfully");
+                        alert.showAndWait();
+                        Navigator.changeScene(event, "logged-in.fxml", "Welcome!");
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Failed to sign up, please sign up again");
+                        alert.show();
+                    }
                 } else{
                     System.out.println("Please fill in all the information");
                     Alert alert = new Alert(Alert.AlertType.ERROR);

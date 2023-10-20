@@ -20,7 +20,7 @@ public class DBUtils {
 
     private static User currentUser;
 
-    public static void signUpUser(ActionEvent event, String firstName, String lastName, String username, String password){
+    public static boolean signUpUser(String firstName, String lastName, String username, String password){
 
         Connection connection = null;
         // use for query the database
@@ -30,7 +30,8 @@ public class DBUtils {
         ResultSet resultSet = null;
 
 
-        try{
+        try
+        {
             // connect the database
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
 
@@ -58,17 +59,11 @@ public class DBUtils {
 
                 // if the new info successfully update to database
                 if (rowsAffected > 0) {
-                    currentUser = new User(username, firstName, lastName, password, "No");
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information Dialog");
-                    alert.setContentText("Your account has been created successfully");
-                    alert.showAndWait();
-                    Navigator.changeScene(event, "logged-in.fxml", "Welcome!");
+                    System.out.println("Signed up successfully");
+                    return true;
                 } else {
                     System.out.println("Failed to sign up");
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Failed to sign up, please sign up again");
-                    alert.show();
+                    return false;
                 }
             }
         } catch (SQLException e){
@@ -105,10 +100,11 @@ public class DBUtils {
                 }
             }
         }
+        return false;
     }
 
 
-    public static void logInUser (ActionEvent event, String username, String password){
+    public static boolean logInUser (String username, String password){
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -122,9 +118,7 @@ public class DBUtils {
             // if user is not found in the database, prompt user that
             if (!resultSet.isBeforeFirst()){
                 System.out.println("User not found in the database");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Provided credentials are incorrect");
-                alert.show();
+                return false;
             } else {
                 // when user exists in the database
                 while (resultSet.next()){
@@ -135,13 +129,12 @@ public class DBUtils {
                     String retrievedUserType = resultSet.getString("isVIP");
                     // if the password user input matches the database, show logged-in page
                     if (retrievedPassword.equals(password)){
+                        // renew current user information for later information retrieve
                         currentUser = new User(username, retrievedFirstName, retrievedLastName, retrievedPassword, retrievedUserType);
-                        Navigator.changeScene(event, "logged-in.fxml","Welcome!");
+                        return true;
                     } else {
                         System.out.println("Password did not match");
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("The provided password is incorrect");
-                        alert.show();
+                        return false;
                     }
                 }
             }
@@ -172,17 +165,13 @@ public class DBUtils {
                 }
             }
         }
+        return false;
     }
 
-    public static void updateProfile(ActionEvent event, String newFirstName, String newLastName, String newUsername, String newPassword){
+    public static boolean updateProfile(String newFirstName, String newLastName, String newUsername, String newPassword){
         Connection connection = null;
         // use for query the database
         PreparedStatement psUpdateProfile = null;
-        PreparedStatement psCheckUserExists = null;
-        // contain the data return from the database when query it
-        ResultSet resultSet = null;
-
-
         try {
             // connect the database
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
@@ -199,43 +188,21 @@ public class DBUtils {
             // if the new info successfully update to database
             if (rowsAffected > 0) {
                 currentUser = new User(newUsername, newFirstName, newLastName, newPassword, currentUser.getIsVIP());
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setContentText("Changes have been saved");
-                alert.showAndWait();
-                Navigator.changeScene(event, "logged-in.fxml", "Profile Updated");
+                System.out.println("User info updated");
+                return true;
             } else {
                 System.out.println("Failed to update profile");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Failed to update profile. Please try again.");
-                alert.show();
+                return false;
             }
         } catch (SQLException e){
             // if the username already exist in the database
             if (e.getErrorCode() == SQLITE_CONSTRAINT.code) {
                 System.out.println("Username is already in use");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Username is already in use. Please choose a different username.");
-                alert.show();
+                return false;
             } else {
                 e.printStackTrace();
             }
         }finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (psCheckUserExists != null) {
-                try {
-                    psCheckUserExists.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
             if (psUpdateProfile != null) {
                 try {
                     psUpdateProfile.close();
@@ -252,63 +219,55 @@ public class DBUtils {
                 }
             }
         }
-
+        return false;
     }
 
-    public static boolean addPost(ActionEvent event, String content, String likesStr, String sharesStr, String date) {
-        // Validate the input data of the post
-        ValidateUserInput validateUserInput = new ValidateUserInput();
-        if (validateUserInput.hasComma(content) || !validateUserInput.isPositiveInteger(likesStr) || !validateUserInput.isPositiveInteger(sharesStr) || !validateUserInput.validateDateFromUser(date)) {
-            System.out.println("Invalid post data. Please check your input.");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Invalid post data. Please check your input.");
-            alert.show();
-            return false;
-        }
-
-        int likes = Integer.parseInt(likesStr);
-        int shares = Integer.parseInt(sharesStr);
-
+    public static boolean addPost(String content, String likesStr, String sharesStr, String date) {
+        int likesInt = Integer.parseInt(likesStr);
+        int sharesInt = Integer.parseInt(sharesStr);
         // Insert the post into the database
         Connection connection = null;
         PreparedStatement psInsert = null;
 
-        try {
-            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+        ValidateUserInput validator = new ValidateUserInput();
+        // validate user input
+        if (!validator.hasComma(content) && validator.isPositiveInteger(likesStr) && validator.isPositiveInteger(sharesStr) && validator.validateDateFromUser(date)) {
+            try {
+                connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+                // Add a post to database
+                psInsert = connection.prepareStatement("INSERT INTO Posts (content, likes, shares, date, userid) VALUES (?, ?, ?, ?, (SELECT userId FROM UserInfo WHERE username = ?))");
+                psInsert.setString(1, content);
+                psInsert.setInt(2, likesInt);
+                psInsert.setInt(3, sharesInt);
+                psInsert.setString(4, date);
+                psInsert.setString(5, currentUser.getUsername());
 
-            // Add a post to database
-            psInsert = connection.prepareStatement("INSERT INTO Posts (content, likes, shares, date, userid) VALUES (?, ?, ?, ?, (SELECT userId FROM UserInfo WHERE username = ?))");
-            psInsert.setString(1, content);
-            psInsert.setInt(2, likes);
-            psInsert.setInt(3, shares);
-            psInsert.setString(4, date);
-            psInsert.setString(5, currentUser.getUsername());
-
-            int rowsAffected = psInsert.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Post added successfully!");
-                return true;
-            } else {
-                System.out.println("Failed to add the post.");
-                return false;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // Close resources
-            if (psInsert != null) {
-                try {
-                    psInsert.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                int rowsAffected = psInsert.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("Post added successfully!");
+                    return true;
+                } else {
+                    System.out.println("Failed to add the post.");
+                    return false;
                 }
-            }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                // Close resources
+                if (psInsert != null) {
+                    try {
+                        psInsert.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -726,7 +685,7 @@ public class DBUtils {
         }
     }
 
-    public static void upgradeToVIP (ActionEvent event,String username) {
+    public static boolean upgradeToVIP (String username) {
         Connection connection = null;
         PreparedStatement psUpdateToVIP = null;
 
@@ -749,10 +708,11 @@ public class DBUtils {
                 Optional<ButtonType> userChoice = alert.showAndWait();
 
                 if (userChoice.isPresent() && userChoice.get() == logOutButton) {
-                    Navigator.changeScene(event, "first-page.fxml","Data Analytics Hub");
+                    return true;
                 }
             } else {
                 System.out.println("Failed upgrade to VIP.");
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -773,6 +733,7 @@ public class DBUtils {
                 }
             }
         }
+        return false;
     }
 
     public static CategoryShareCounts getShareCategoryCounts(String username) {
@@ -807,7 +768,6 @@ public class DBUtils {
             e.printStackTrace();
         } finally {
             // Close resources (resultSet, preparedStatement, connection)
-            // Close resources (resultSet, preparedStatement, connection)
             if (resultSet != null) {
                 try {
                     resultSet.close();
@@ -833,18 +793,16 @@ public class DBUtils {
         return shareCounts;
     }
 
-    public static void bulkImportFromCSV(String csvFilePath) {
-            // Read the CSV file row by row
-
+    public static boolean bulkImportFromCSV(String csvFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            // Read the CSV file row by row
             String line;
             boolean firstLine = true;
             // Read each line of the CSV file
             while ((line = br.readLine()) != null) {
                 // Split the line into columns using a comma as the delimiter
                 String[] columns = line.split(",");
-
-                // skip the first line in csv file
+                // skip the header in csv file
                 if (firstLine){
                     firstLine = false;
                     continue;
@@ -855,21 +813,61 @@ public class DBUtils {
                     String likes = columns[3];
                     String shares = columns[4];
                     String dateTime = columns[5];
-                    // Perform your business logic to add the post to the database
-                    ActionEvent event = new ActionEvent();
-                    addPost(event, content, likes, shares, dateTime);
+                    addPost(content, likes, shares, dateTime);
                 } else {
                     // Handle invalid data format (e.g., log, throw an exception, or skip)
+                    System.out.println("The csv file does not follow the correct format");
+                    return false;
                 }
             }
-            // Close the CSV reader
-            br.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle the exception as needed (e.g., log or show an error message)
+        }
+        return false;
+    }
 
+    // remove a user from db
+    public static boolean deleteUser (String username){
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            preparedStatement = connection.prepareStatement("DELETE FROM UserInfo WHERE username = ?");
+            preparedStatement.setString(1, username);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("User has been deleted");
+                return true;
+
+            } else {
+                System.out.println("fail to delete user");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close all the resources
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        }
+        return false;
+    }
+
 
     public static User getCurrentUser() {
         return currentUser;

@@ -53,7 +53,7 @@ public class ManagePostController implements Initializable {
     @FXML
     private TableColumn<Post, String> colDate;
 
-
+    private final ValidateUserInput validator = new ValidateUserInput();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,21 +76,27 @@ public class ManagePostController implements Initializable {
                 String postID = tf_postIdFromUser.getText();
                 String username = DBUtils.getCurrentUser().getUsername();
                 if (!postID.isEmpty()){
-                    boolean isRemoved = DBUtils.removePost(postID, username);
-                    if (isRemoved){
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Information Dialog");
-                        alert.setContentText("Post with ID " + postID + " has been successfully removed.");
-                        alert.showAndWait();
-                        // clear the input field and refresh the TableView
-                        tf_postIdFromUser.clear();
-                        tableView.getItems().clear();
+                    if (validator.isPositiveInteger(postID)){
+                        boolean isRemoved = DBUtils.removePost(postID, username);
+                        if (isRemoved){
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Information Dialog");
+                            alert.setContentText("Post with ID " + postID + " has been successfully removed.");
+                            alert.showAndWait();
+                            // clear the input field and refresh the TableView
+                            tf_postIdFromUser.clear();
+                            tableView.getItems().clear();
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText("No post found with ID " + postID + ". Nothing was removed.");
+                            alert.show();
+                        }
                     } else {
+                        System.out.println("Please provide a positive int");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setContentText("No post found with ID " + postID + ". Nothing was removed.");
+                        alert.setContentText("Please provide a positive int");
                         alert.show();
                     }
-
                 } else {
                     System.out.println("Please provide a post ID to remove!");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -126,17 +132,25 @@ public class ManagePostController implements Initializable {
         String postID = tf_postIdFromUser.getText();
         User currentUser = DBUtils.getCurrentUser();
         String username = currentUser.getUsername(); // Get the currently logged-in user's username
+        // check if user fill the form
         if (!postID.isEmpty()){
-            Post retrievedPost = DBUtils.retrieveAPostByPostId(postID, username);
-            if (retrievedPost != null) {
-                ObservableList<Post> data = FXCollections.observableArrayList(retrievedPost);
-                tableView.setItems(data);
+            // check if the provided id is a positive int
+            if (validator.isPositiveInteger(postID)){
+                Post retrievedPost = DBUtils.retrieveAPostByPostId(postID, username);
+                if (retrievedPost != null) {
+                    ObservableList<Post> data = FXCollections.observableArrayList(retrievedPost);
+                    tableView.setItems(data);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Provided Post ID dose not exist");
+                    alert.show();
+                }
             } else {
+                System.out.println("Please provide a positive int");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Provided Post ID dose not exist");
+                alert.setContentText("Please provide a positive int");
                 alert.show();
             }
-
         } else {
             System.out.println("Please provide a post ID");
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -159,19 +173,26 @@ public class ManagePostController implements Initializable {
     @FXML
     private void retrieveTopNPostsByLikes(){
         String nFromUser = tf_nFromUser.getText();
+        int nFromUserInt = Integer.parseInt(nFromUser);
 
-        if (!nFromUser.isEmpty()){
-            User currentUser = DBUtils.getCurrentUser();
-            String username = currentUser.getUsername(); // Get the currently logged-in user's username
-            int n = Integer.parseInt(nFromUser);
-            List<Post> allPosts = DBUtils.retrieveTopPostsByLikes(username,n);
+        if (!nFromUser.isEmpty() && validator.isPositiveInteger(nFromUser)){
+            if (nFromUserInt != 0){
+                User currentUser = DBUtils.getCurrentUser();
+                String username = currentUser.getUsername(); // Get the currently logged-in user's username
+                int n = Integer.parseInt(nFromUser);
+                List<Post> allPosts = DBUtils.retrieveTopPostsByLikes(username,n);
 
-            ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
-            tableView.setItems(data);
+                ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+                tableView.setItems(data);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Please specify a number greater than zero");
+                alert.show();
+            }
         } else {
             System.out.print("Please specify the number of posts to retrieve (N): ");
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Please specify the number of posts to retrieve");
+            alert.setContentText("Please specify the number of posts to retrieve (positive int)");
             alert.show();
         }
     }
@@ -180,7 +201,7 @@ public class ManagePostController implements Initializable {
     private void retrieveTopPostsFromEntireDatabaseByLikes() {
         String nFromUser = tf_nFromUser.getText();
 
-        if (!nFromUser.isEmpty()){
+        if (!nFromUser.isEmpty() && validator.isPositiveInteger(nFromUser)){
             User currentUser = DBUtils.getCurrentUser();
             String username = currentUser.getUsername(); // Get the currently logged-in user's username
             int n = Integer.parseInt(nFromUser);
@@ -191,7 +212,7 @@ public class ManagePostController implements Initializable {
         } else {
             System.out.print("Please specify the number of posts to retrieve (N): ");
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Please specify the number of posts to retrieve");
+            alert.setContentText("Please specify the number of posts to retrieve (positive int)");
             alert.show();
         }
     }
@@ -201,7 +222,7 @@ public class ManagePostController implements Initializable {
         User currentUser = DBUtils.getCurrentUser();
         String username = currentUser.getUsername();
 
-        if (!postId.isEmpty()){
+        if (!postId.isEmpty() && validator.isPositiveInteger(postId)){
             Post retrievedPost = DBUtils.retrieveAPostByPostId(postId, username);
             if (retrievedPost != null){
                 // if the post that user want to remove exists
@@ -233,9 +254,9 @@ public class ManagePostController implements Initializable {
                 alert.show();
             }
         } else {
-            System.out.println("Please provide a post ID to export post");
+            System.out.println("Please provide a post ID to export post ");
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Please provide a post ID to export post");
+            alert.setContentText("Please provide a post ID to export post (positive int)");
             alert.show();
         }
     }

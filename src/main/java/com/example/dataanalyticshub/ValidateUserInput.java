@@ -6,7 +6,7 @@ public class ValidateUserInput {
 
     // Validate if a string has no comma
     public boolean hasComma(String input){
-            if(input.contains(",")){
+            if (input.contains(",")) {
                 return true;
             } else{
                 return false;

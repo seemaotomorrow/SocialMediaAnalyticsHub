@@ -22,8 +22,7 @@ public class Navigator {
         Node node = (Node) event.getSource();
         Stage stage = (Stage) node.getScene().getWindow();
         stage.setTitle(title);
-        stage.setScene(new Scene(root, 600, 400));
+        stage.setScene(new Scene(root, 630, 400));
         stage.show();
-
     }
 }

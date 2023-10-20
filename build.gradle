@@ -26,10 +26,11 @@ javafx {
 
 dependencies {
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+    testImplementation("com.h2database:h2:2.1.214")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
 test {
-  useJUnitPlatform() 
+  useJUnitPlatform()
 }

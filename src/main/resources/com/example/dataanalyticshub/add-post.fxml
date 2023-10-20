@@ -27,12 +27,12 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_shares" layoutX="97.0" layoutY="196.0">
+            <TextField fx:id="tf_shares" layoutX="97.0" layoutY="196.0" prefHeight="27.0" prefWidth="229.0">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="button_addPost" layoutX="97.0" layoutY="284.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="172.0" style="-fx-background-color: #89CFF0;" text="Add">
+            <Button fx:id="button_addPost" layoutX="97.0" layoutY="284.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="229.0" style="-fx-background-color: #89CFF0;" text="Add">
                <font>
                   <Font size="14.0" />
                </font>
@@ -57,7 +57,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_likes" layoutX="97.0" layoutY="154.0">
+            <TextField fx:id="tf_likes" layoutX="97.0" layoutY="154.0" prefHeight="27.0" prefWidth="229.0">
                <font>
                   <Font size="14.0" />
                </font>
@@ -67,7 +67,7 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_content" layoutX="97.0" layoutY="114.0">
+            <TextField fx:id="tf_content" layoutX="97.0" layoutY="114.0" prefHeight="27.0" prefWidth="229.0">
                <font>
                   <Font size="14.0" />
                </font>
@@ -77,7 +77,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_date" layoutX="97.0" layoutY="240.0">
+            <TextField fx:id="tf_date" layoutX="97.0" layoutY="240.0" prefHeight="27.0" prefWidth="229.0">
                <font>
                   <Font size="14.0" />
                </font>

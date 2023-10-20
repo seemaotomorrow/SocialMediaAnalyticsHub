@@ -38,7 +38,18 @@ public class EditProfileController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 if (!tf_newFirstName.getText().trim().isEmpty() && !tf_newLastName.getText().trim().isEmpty() && !tf_newUsername.getText().trim().isEmpty() && !tf_newPassword.getText().trim().isEmpty()) {
-                    DBUtils.updateProfile(event, tf_newFirstName.getText(), tf_newLastName.getText(), tf_newUsername.getText(), tf_newPassword.getText());
+                    boolean infoUpdated =  DBUtils.updateProfile(tf_newFirstName.getText(), tf_newLastName.getText(), tf_newUsername.getText(), tf_newPassword.getText());
+                    if (infoUpdated){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Information Dialog");
+                        alert.setContentText("Changes have been saved");
+                        alert.showAndWait();
+                        Navigator.changeScene(event, "logged-in.fxml", "Profile Updated");
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Username is already in use. Please choose a different username.");
+                        alert.show();
+                    }
                 } else {
                     System.out.println("Please fill in all the information");
                     Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -28,7 +29,20 @@ public class FirstPageController implements Initializable {
         button_login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                DBUtils.logInUser(event, tf_username.getText(), tf_password.getText());
+                if (!tf_username.getText().isEmpty() && !tf_password.getText().isEmpty()){
+                    boolean loggedIn = DBUtils.logInUser(tf_username.getText(), tf_password.getText());
+                    if (loggedIn){
+                        Navigator.changeScene(event, "logged-in.fxml","Welcome!");
+                    } else{
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("Provided credentials are incorrect");
+                        alert.show();
+                    }
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Please fill in all the credentials");
+                    alert.show();
+                }
             }
         });
 

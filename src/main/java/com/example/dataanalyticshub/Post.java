@@ -83,44 +83,5 @@ public class Post {
         this.author = author;
     }
 
-//    public String formatDate(){
-//    LocalDateTime date = this.getDate();
-//    // wished output formatter
-//    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-//    // format the localDateTime into the wished string
-//    String dateString = date.format(outputFormatter);
-//    return dateString;
-//}
-//    public String formattedPost_withLikes(){
-//        int postId = this.getId();
-//        String content = this.getContent();
-//        int likes = this.getLikes();
-//        String formattedString =  String.format("%d | %s | %d", postId, content, likes);
-//        return formattedString;
-//    }
-
-//    public String formattedPost_withShares(){
-//        int postId = this.getId();
-//        String content = this.getContent();
-//        int shares = this.getShares();
-//        String formattedString =  String.format("%d | %s | %d", postId, content, shares);
-//        return formattedString;
-//    }
-
-//    public String formattedPost_allInfo(){
-//        int postId = this.getId();
-//        String content = this.getContent();
-//        String author = this.getAuthor();
-//        int likes = this.getLikes();
-//        int shares = this.getShares();
-//        LocalDateTime date = this.getDate();
-//        // wished output formatter
-//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-//        // format the localDateTime into the wished string
-//        String dateString = date.format(outputFormatter);
-//        String formattedString =  String.format("%d | %s | %s | %d | %d | %s", postId, content, author, likes, shares, dateString);
-//        return formattedString;
-//    }
-
 
 }
