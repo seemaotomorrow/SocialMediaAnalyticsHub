@@ -309,7 +309,7 @@ public class DBUtils {
         }
     }
 
-    public static Post retrievePost(String postID) {
+    public static Post retrieveAPostByPostId(String postID, String username) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -317,8 +317,9 @@ public class DBUtils {
         Post post = null;
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
-            preparedStatement = connection.prepareStatement("SELECT * FROM posts WHERE postId = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM posts WHERE postId = ? AND userId = (SELECT userId FROM UserInfo WHERE username = ?)");
             preparedStatement.setString(1, postID);
+            preparedStatement.setString(2, username);
             resultSet = preparedStatement.executeQuery();
 
             // if the provided post ID doesn't exist

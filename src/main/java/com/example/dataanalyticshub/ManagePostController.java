@@ -109,8 +109,10 @@ public class ManagePostController implements Initializable {
     @FXML
     private void retrievePostById() {
         String postID = tf_postIdFromUser.getText();
+        User currentUser = DBUtils.getCurrentUser();
+        String username = currentUser.getUsername(); // Get the currently logged-in user's username
         if (!postID.isEmpty()){
-            Post retrievedPost = DBUtils.retrievePost(postID);
+            Post retrievedPost = DBUtils.retrieveAPostByPostId(postID, username);
             ObservableList<Post> data = FXCollections.observableArrayList(retrievedPost);
             tableView.setItems(data);
         } else {
@@ -121,6 +123,7 @@ public class ManagePostController implements Initializable {
         }
     }
 
+    // current logged-in user can only see all of their own post
     @FXML
     private void retrievePostsByCurrentUser() {
         User currentUser = DBUtils.getCurrentUser();
