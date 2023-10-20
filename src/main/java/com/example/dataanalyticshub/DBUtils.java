@@ -59,7 +59,7 @@ public class DBUtils {
 
                 // if the new info successfully update to database
                 if (rowsAffected > 0) {
-                    currentUser = new User(username, firstName, lastName, password);
+                    currentUser = new User(username, firstName, lastName, password, "No");
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information Dialog");
                     alert.setContentText("Your account has been created successfully");
@@ -116,7 +116,7 @@ public class DBUtils {
 
         try{
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
-            preparedStatement = connection.prepareStatement("SELECT password, firstName, lastName FROM UserInfo WHERE username = ?");
+            preparedStatement = connection.prepareStatement("SELECT password, firstName, lastName, isVIP FROM UserInfo WHERE username = ?");
             preparedStatement.setString(1,username);
             resultSet = preparedStatement.executeQuery();
 
@@ -133,9 +133,10 @@ public class DBUtils {
                     String retrievedPassword = resultSet.getString("password");
                     String retrievedFirstName = resultSet.getString("firstName");
                     String retrievedLastName = resultSet.getString("lastName");
+                    String retrievedUserType = resultSet.getString("isVIP");
                     // if the password user input matches the database, show logged-in page
                     if (retrievedPassword.equals(password)){
-                        currentUser = new User(username, retrievedFirstName, retrievedLastName, retrievedPassword);
+                        currentUser = new User(username, retrievedFirstName, retrievedLastName, retrievedPassword, retrievedUserType);
                         Navigator.changeScene(event, "logged-in.fxml","Welcome!");
                     } else {
                         System.out.println("Password did not match");
@@ -172,7 +173,6 @@ public class DBUtils {
                 }
             }
         }
-
     }
 
     public static void updateProfile(ActionEvent event, String newFirstName, String newLastName, String newUsername, String newPassword){
@@ -199,7 +199,7 @@ public class DBUtils {
 
             // if the new info successfully update to database
             if (rowsAffected > 0) {
-                currentUser = new User(newUsername, newFirstName, newLastName, newPassword);
+                currentUser = new User(newUsername, newFirstName, newLastName, newPassword, currentUser.getIsVIP());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information Dialog");
                 alert.setContentText("Changes have been saved");
@@ -720,6 +720,48 @@ public class DBUtils {
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void upgradeToVIP (String username) {
+        Connection connection = null;
+        PreparedStatement psUpdateToVIP = null;
+
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
+            psUpdateToVIP = connection.prepareStatement("UPDATE UserInfo SET isVIP = ? WHERE username = ?");
+            psUpdateToVIP.setString(1, "Yes");
+            psUpdateToVIP.setString(2, username);
+
+            int rowsAffected = psUpdateToVIP.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Upgrade to VIP successfully.\n Please log out and log in again to access VIP functionalities.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information Dialog");
+                alert.setContentText("Upgrade to VIP successfully.\n Please log out and log in again to access VIP functionalities.");
+                alert.showAndWait();
+            } else {
+                System.out.println("Failed upgrade to VIP.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources (psUpdateToVIP, connection)
+            if (psUpdateToVIP != null) {
+                try {
+                    psUpdateToVIP.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
