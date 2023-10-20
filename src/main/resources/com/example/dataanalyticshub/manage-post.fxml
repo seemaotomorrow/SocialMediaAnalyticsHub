@@ -6,94 +6,90 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.ManagePostController">
+
+<AnchorPane prefHeight="403.0" prefWidth="645.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.ManagePostController">
    <children>
-      <AnchorPane prefHeight="400.0" prefWidth="645.0">
-         <children>
-            <Button fx:id="button_retrieve" layoutX="257.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Retrieve">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="447.0" layoutY="369.0" text="Go back to dashboard">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="button_backToDashboard" layoutX="575.0" layoutY="365.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="19.0" layoutY="76.0" text="Post ID" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="76.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="19.0" layoutY="40.0" prefHeight="24.0" prefWidth="238.0" text="Retrieve a post by post ID:">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="tf_postIdFromUser" layoutX="73.0" layoutY="72.0" prefHeight="24.0" prefWidth="172.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <TableView fx:id="tableView" layoutX="19.0" layoutY="112.0" prefHeight="190.0" prefWidth="564.0">
-              <columns>
-                <TableColumn fx:id="colPostID" prefWidth="75.0" text="Post ID" />
-                <TableColumn fx:id="colContent" prefWidth="151.0" text="Content" />
-                  <TableColumn fx:id="colAuthor" prefWidth="66.0" text="Author" />
-                  <TableColumn fx:id="colLikes" prefWidth="72.0" text="Likes" />
-                  <TableColumn fx:id="colShares" prefWidth="83.0" text="shares" />
-                  <TableColumn fx:id="colDate" prefWidth="115.0" text="Date" />
-              </columns>
-            </TableView>
-            <Button fx:id="button_remove" layoutX="352.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Remove">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="225.0" layoutY="8.0" prefHeight="38.0" prefWidth="136.0" text="Manage Posts" textAlignment="CENTER">
-               <font>
-                  <Font name="Al Nile" size="21.0" />
-               </font>
-            </Label>
-            <Button fx:id="button_showAllPosts" layoutX="453.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="130.0" style="-fx-background-color: #89CFF0;" text="Show All posts">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="button_topNPostsByLikes" layoutX="201.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="184.0" style="-fx-background-color: #89CFF0;" text="By Likes in your collection">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="19.0" layoutY="315.0" prefHeight="24.0" prefWidth="172.0" text="Retrieve Top                 Posts">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <TextField fx:id="tf_nFromUser" layoutX="105.0" layoutY="314.0" prefHeight="27.0" prefWidth="42.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </TextField>
-            <Button fx:id="button_topNPostsByLikesInDB" layoutX="201.0" layoutY="351.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="184.0" style="-fx-background-color: #89CFF0;" text="By Likes in whole database">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="button_export" layoutX="447.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Export">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-         </children>
-      </AnchorPane>
+      <Button fx:id="button_retrieve" layoutX="257.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Retrieve">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="447.0" layoutY="369.0" text="Go back to dashboard">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="button_backToDashboard" layoutX="575.0" layoutY="365.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Back" textFill="#0d14eb" underline="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="19.0" layoutY="76.0" text="Post ID" AnchorPane.leftAnchor="19.0" AnchorPane.topAnchor="76.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="19.0" layoutY="40.0" prefHeight="24.0" prefWidth="238.0" text="Retrieve a post by post ID:">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tf_postIdFromUser" layoutX="73.0" layoutY="72.0" prefHeight="24.0" prefWidth="172.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <TableView fx:id="tableView" layoutX="19.0" layoutY="112.0" prefHeight="190.0" prefWidth="564.0">
+        <columns>
+          <TableColumn fx:id="colPostID" prefWidth="75.0" text="Post ID" />
+          <TableColumn fx:id="colContent" prefWidth="151.0" text="Content" />
+            <TableColumn fx:id="colAuthor" prefWidth="66.0" text="Author" />
+            <TableColumn fx:id="colLikes" prefWidth="72.0" text="Likes" />
+            <TableColumn fx:id="colShares" prefWidth="83.0" text="shares" />
+            <TableColumn fx:id="colDate" prefWidth="115.0" text="Date" />
+        </columns>
+      </TableView>
+      <Button fx:id="button_remove" layoutX="352.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Remove">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="225.0" layoutY="8.0" prefHeight="38.0" prefWidth="136.0" text="Manage Posts" textAlignment="CENTER">
+         <font>
+            <Font name="Al Nile" size="21.0" />
+         </font>
+      </Label>
+      <Button fx:id="button_showAllPosts" layoutX="453.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="130.0" style="-fx-background-color: #89CFF0;" text="Show All posts">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="button_topNPostsByLikes" layoutX="201.0" layoutY="313.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="184.0" style="-fx-background-color: #89CFF0;" text="By Likes in your collection">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Label layoutX="19.0" layoutY="315.0" prefHeight="24.0" prefWidth="172.0" text="Retrieve Top                 Posts">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tf_nFromUser" layoutX="105.0" layoutY="314.0" prefHeight="27.0" prefWidth="42.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </TextField>
+      <Button fx:id="button_topNPostsByLikesInDB" layoutX="201.0" layoutY="351.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="184.0" style="-fx-background-color: #89CFF0;" text="By Likes in whole database">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="button_export" layoutX="447.0" layoutY="72.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="71.0" style="-fx-background-color: #89CFF0;" text="Export">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
    </children>
-</HBox>
+</AnchorPane>

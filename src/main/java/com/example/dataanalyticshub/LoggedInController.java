@@ -12,7 +12,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -81,7 +84,7 @@ public class LoggedInController implements Initializable {
         button_managePost.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Navigator.changeScene(event, "manage-post.fxml", "Retrieve a Post");
+                Navigator.changeScene(event, "manage-post.fxml", "Manage Posts");
             }
         });
 
@@ -116,6 +119,13 @@ public class LoggedInController implements Initializable {
                 generatePieChart(event);
             }
         });
+
+        button_importPostsFromCSV.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                importPostsFromCSV(event);
+            }
+        });
         }
 
     @FXML
@@ -142,5 +152,31 @@ public class LoggedInController implements Initializable {
         chartStage.setTitle("Share Distribution Chart");
         chartStage.setScene(new Scene(chart));
         chartStage.show();
+    }
+
+    @FXML
+    // Event handler for the "button_importPostsFromCSV"
+    private void importPostsFromCSV(ActionEvent event) {
+        // Create a FileChooser to allow the user to select a CSV file
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setTitle("Select a CSV file");
+
+        // Show the file dialog
+        File selectedFile = fileChooser.showOpenDialog(new Stage());
+
+        if (selectedFile != null) {
+            // Get the path of the selected CSV file
+            String csvFilePath = selectedFile.getAbsolutePath();
+
+            // Call the bulkImportFromCSV method from your DBUtils class
+            DBUtils.bulkImportFromCSV(csvFilePath);
+
+            // Prompt user after all the posts been added successfully
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information Dialog");
+            alert.setContentText("Posts from csv file been added successfully to your collection.");
+            alert.showAndWait();
+        }
     }
 }

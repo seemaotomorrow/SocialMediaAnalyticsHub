@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.sqlite.core.DB;
 
 import java.io.File;
 import java.net.URL;
@@ -73,11 +74,23 @@ public class ManagePostController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 String postID = tf_postIdFromUser.getText();
+                String username = DBUtils.getCurrentUser().getUsername();
                 if (!postID.isEmpty()){
-                    DBUtils.removePost(postID);
-                    // clear the input field and refresh the TableView
-                    tf_postIdFromUser.clear();
-                    tableView.getItems().clear();
+                    boolean isRemoved = DBUtils.removePost(postID, username);
+                    if (isRemoved){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Information Dialog");
+                        alert.setContentText("Post with ID " + postID + " has been successfully removed.");
+                        alert.showAndWait();
+                        // clear the input field and refresh the TableView
+                        tf_postIdFromUser.clear();
+                        tableView.getItems().clear();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setContentText("No post found with ID " + postID + ". Nothing was removed.");
+                        alert.show();
+                    }
+
                 } else {
                     System.out.println("Please provide a post ID to remove!");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -115,8 +128,15 @@ public class ManagePostController implements Initializable {
         String username = currentUser.getUsername(); // Get the currently logged-in user's username
         if (!postID.isEmpty()){
             Post retrievedPost = DBUtils.retrieveAPostByPostId(postID, username);
-            ObservableList<Post> data = FXCollections.observableArrayList(retrievedPost);
-            tableView.setItems(data);
+            if (retrievedPost != null) {
+                ObservableList<Post> data = FXCollections.observableArrayList(retrievedPost);
+                tableView.setItems(data);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Provided Post ID dose not exist");
+                alert.show();
+            }
+
         } else {
             System.out.println("Please provide a post ID");
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -182,24 +202,35 @@ public class ManagePostController implements Initializable {
         String username = currentUser.getUsername();
 
         if (!postId.isEmpty()){
-            // use file chooser to implement this function
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Post as CSV");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-            Node node = (Node) event.getSource();
+            Post retrievedPost = DBUtils.retrieveAPostByPostId(postId, username);
+            if (retrievedPost != null){
+                // if the post that user want to remove exists
+                // use file chooser to implement this function
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save Post as CSV");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+                Node node = (Node) event.getSource();
 
-            Stage stage = (Stage) node.getScene().getWindow();
-            // Opening a dialog box and returns a file after click save
-            // returns null if cancel
-            File file = fileChooser.showSaveDialog(stage);
+                Stage stage = (Stage) node.getScene().getWindow();
+                // Opening a dialog box and returns a file after click save
+                // returns null if cancel
+                File file = fileChooser.showSaveDialog(stage);
 
-            if (file != null) {
-                // Extract folder path and filename from the chosen file
-                String folderPath = file.getParent();
-                String fileName = file.getName().replaceAll(".csv", "");
+                if (file != null) {
+                    // Extract folder path and filename from the chosen file
+                    String folderPath = file.getParent();
+                    String fileName = file.getName().replaceAll(".csv", "");
 
-                // Call the exportPostToCSV method from DBUtils
-                DBUtils.exportPostToCSV(postId,username, folderPath, fileName);
+                    // Call the exportPostToCSV method from DBUtils
+                    DBUtils.exportPostToCSV(postId,username, folderPath, fileName);
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setContentText("Post with ID " + postId + " is exported successfully");
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Post with ID " + postId + " is not found");
+                alert.show();
             }
         } else {
             System.out.println("Please provide a post ID to export post");

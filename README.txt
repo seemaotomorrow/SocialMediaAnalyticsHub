@@ -17,18 +17,22 @@ Link to Github repository: https://github.com/seemaotomorrow/AP-A2-DataAnalytics
 
 
 * Assumptions
-1. Assume each time a user sign up, it always read from the 'posts.csv' csv file as their initial posts collection
+1. Assume if a new user sign up, they need to add posts to their collection manually by using the 'add a post function' in the system.
+   Only the VIP user can bulk import posts from a CSV file
 
-2. Auto incrementing post ids.(when user adding a post, don't need to provid ID)
+2. Auto incrementing post IDs.(when user adding a post, don't need to provide a post ID)
 
-4. Assume the author of a post is the current logged-in user.(when user adding a post, don't need to provid Author)
+3. Assume the author of a post is the current logged-in user.(when user adding a post, don't need to provide Author, it will assign the 'username' to author)
+   This assumption also apply when user import posts from a csv file
 
-5. Assume the csv file always have the correct format(first line is the header), all the data from the csv file are valid data;
+4. Assume when logged-in user retrieve/delete a post by post ID, they can only retrieve/delete a post in their own collection
 
-
+5. Assume when logged-in user retrieve posts by top N likes, they have the options to retrieve from just their collection or
+   retrieve from the whole database.
 
 
 
 
 Reference:
-1. "JavaFX Login and Signup Form with Database Connection, https://www.youtube.com/watch?v=ltX5AtW9v30
+1. JavaFX Login and Signup Form with Database Connection, https://www.youtube.com/watch?v=ltX5AtW9v30
+2. How to save files using a File Chooser in JavaFX? https://www.tutorialspoint.com/how-to-save-files-using-a-file-chooser-in-javafx

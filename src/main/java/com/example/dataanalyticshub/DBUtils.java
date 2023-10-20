@@ -4,10 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,15 +255,15 @@ public class DBUtils {
 
     }
 
-    public static void addPost(ActionEvent event, String content, String likesStr, String sharesStr, String date) {
-        // Validate the input data
+    public static boolean addPost(ActionEvent event, String content, String likesStr, String sharesStr, String date) {
+        // Validate the input data of the post
         ValidateUserInput validateUserInput = new ValidateUserInput();
         if (validateUserInput.hasComma(content) || !validateUserInput.isPositiveInteger(likesStr) || !validateUserInput.isPositiveInteger(sharesStr) || !validateUserInput.validateDateFromUser(date)) {
             System.out.println("Invalid post data. Please check your input.");
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Invalid post data. Please check your input.");
             alert.show();
-            return;
+            return false;
         }
 
         int likes = Integer.parseInt(likesStr);
@@ -290,14 +287,10 @@ public class DBUtils {
             int rowsAffected = psInsert.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Post added successfully!");
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setContentText("Post added successfully!");
-                alert.showAndWait();
-                Navigator.changeScene(event, "logged-in.fxml", "Post has been added");
+                return true;
             } else {
                 System.out.println("Failed to add the post.");
-                // Handle the case where the post was not added to the database
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -319,6 +312,7 @@ public class DBUtils {
                 }
             }
         }
+        return false;
     }
 
     public static Post retrieveAPostByPostId(String postID, String username) {
@@ -337,9 +331,6 @@ public class DBUtils {
             // if the provided post ID doesn't exist
             if (!resultSet.isBeforeFirst()) {
                 System.out.println("Post ID is not found in the database");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Provided Post ID dose not exist");
-                alert.show();
             } else {
                 // post ID exists
                 // Retrieve post details from the database
@@ -383,27 +374,24 @@ public class DBUtils {
         return post; // Return null if the post is not found
     }
 
-    public static void removePost(String postId) {
+    public static boolean removePost(String postId, String username) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:userInfo.db");
-            preparedStatement = connection.prepareStatement("DELETE FROM posts WHERE postId = ?");
+            preparedStatement = connection.prepareStatement("DELETE FROM posts WHERE postId = ? AND userId = (SELECT userId FROM UserInfo WHERE username = ?)");
             preparedStatement.setString(1, postId);
+            preparedStatement.setString(2, username);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setContentText("Post with ID " + postId + " has been successfully removed.");
-                alert.showAndWait();
+                System.out.println("Post with ID " + postId + " has been successfully removed.");
+                return true;
 
             } else {
                 System.out.println("No post found with ID " + postId + ". Nothing was removed.");
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("No post found with ID " + postId + ". Nothing was removed.");
-                alert.show();
+                return false;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -424,6 +412,7 @@ public class DBUtils {
                 }
             }
         }
+        return false;
     }
 
     public static List<Post> retrievePostsByCurrentUser(String username) {
@@ -705,6 +694,7 @@ public class DBUtils {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                System.out.println("Post exported successfully.");
             } else {
                 System.out.println("Post not found.");
             }
@@ -840,9 +830,46 @@ public class DBUtils {
                 }
             }
         }
-
         return shareCounts;
     }
+
+    public static void bulkImportFromCSV(String csvFilePath) {
+            // Read the CSV file row by row
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilePath))) {
+            String line;
+            boolean firstLine = true;
+            // Read each line of the CSV file
+            while ((line = br.readLine()) != null) {
+                // Split the line into columns using a comma as the delimiter
+                String[] columns = line.split(",");
+
+                // skip the first line in csv file
+                if (firstLine){
+                    firstLine = false;
+                    continue;
+                }
+
+                if (columns.length == 6) {
+                    String content = columns[1];
+                    String likes = columns[3];
+                    String shares = columns[4];
+                    String dateTime = columns[5];
+                    // Perform your business logic to add the post to the database
+                    ActionEvent event = new ActionEvent();
+                    addPost(event, content, likes, shares, dateTime);
+                } else {
+                    // Handle invalid data format (e.g., log, throw an exception, or skip)
+                }
+            }
+            // Close the CSV reader
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception as needed (e.g., log or show an error message)
+
+        }
+        }
 
     public static User getCurrentUser() {
         return currentUser;
