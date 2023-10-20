@@ -13,8 +13,9 @@ Link to Github repository: https://github.com/seemaotomorrow/AP-A2-DataAnalytics
 
 * How to run program from command line:
 
-
-
+1. `git clone https://github.com/seemaotomorrow/AP-A2-DataAnalyticsHub`
+2. `cd AP-A2-DataAnalyticsHub`
+3. `./gradlew run`
 
 * Assumptions
 1. Assume if a new user sign up, they need to add posts to their collection manually by using the 'add a post function' in the system.
