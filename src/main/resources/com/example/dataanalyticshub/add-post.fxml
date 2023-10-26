@@ -9,18 +9,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="379.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.AddPostController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dataanalyticshub.AddPostController">
    <children>
       <AnchorPane prefHeight="380.0" prefWidth="260.0">
          <children>
-            <ImageView fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="407.0" fitWidth="272.0" layoutX="-6.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@DataAnalyticsHub.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="379.0" prefWidth="341.0">
+      <AnchorPane prefHeight="0.0" prefWidth="341.0">
          <children>
             <Label layoutX="22.0" layoutY="201.0" text="Shares" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="201.0">
                <font>
