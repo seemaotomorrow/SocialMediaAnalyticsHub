@@ -458,6 +458,11 @@ public class DBUtils {
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
             int totalPosts = resultSet.getInt(1);
+            // if user is not found in the database, prompt user that
+            if (totalPosts == 0){
+                System.out.println("No post in the database yet");
+                return null;
+            }
 
             if (numberOfPosts > totalPosts) {
                 // User requested more posts than available

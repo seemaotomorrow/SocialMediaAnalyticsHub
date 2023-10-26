@@ -173,17 +173,23 @@ public class ManagePostController implements Initializable {
     @FXML
     private void retrieveTopNPostsByLikes(){
         String nFromUser = tf_nFromUser.getText();
-        int nFromUserInt = Integer.parseInt(nFromUser);
+
 
         if (!nFromUser.isEmpty() && validator.isPositiveInteger(nFromUser)){
+            int nFromUserInt = Integer.parseInt(nFromUser);
             if (nFromUserInt != 0){
                 User currentUser = DBUtils.getCurrentUser();
                 String username = currentUser.getUsername(); // Get the currently logged-in user's username
-                int n = Integer.parseInt(nFromUser);
-                List<Post> allPosts = DBUtils.retrieveTopPostsByLikes(username,n);
+                List<Post> allPosts = DBUtils.retrieveTopPostsByLikes(username,nFromUserInt);
 
-                ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
-                tableView.setItems(data);
+                if (allPosts != null){
+                    ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+                    tableView.setItems(data);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("No post in your collection yet");
+                    alert.show();
+                }
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Please specify a number greater than zero");
@@ -206,9 +212,16 @@ public class ManagePostController implements Initializable {
             String username = currentUser.getUsername(); // Get the currently logged-in user's username
             int n = Integer.parseInt(nFromUser);
             List<Post> allPosts = DBUtils.retrieveTopPostsFromEntireDatabaseByLikes(n);
+            // check if there is no post in whole database
+            if (allPosts != null){
+                ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
+                tableView.setItems(data);
+            } else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("No post in the whole database yet");
+                alert.show();
+            }
 
-            ObservableList<Post> data = FXCollections.observableArrayList(allPosts);
-            tableView.setItems(data);
         } else {
             System.out.print("Please specify the number of posts to retrieve (N): ");
             Alert alert = new Alert(Alert.AlertType.ERROR);
